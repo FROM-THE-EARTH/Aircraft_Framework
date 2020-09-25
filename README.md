@@ -85,6 +85,17 @@ bool Aircraft::decelerationFlag() {
 ```
 
 ## 拡張
-AircraftMbedBaseをAircraftArduinoBaseクラスなどにして、新たにArduino向けに実装すると様々なプラットフォーム向けに拡張できると思います。
+### AircraftMbedBaseの拡張
+Mbed以外のプラットフォーム向け（例えばArduino）に拡張するには、AircraftMbedBaseをAircraftArduinoBaseクラスなどにして、新たにArduino向けに実装すると様々なプラットフォーム向けに拡張できると思います。
 
 その際はサードパーティ製ライブラリの更新、WrapperをArduino向けに再実装する必要があります。
+
+実装済みセンサ以外のセンサを利用したい場合はそのセンサ用のライブラリとWrapperを用意し、AircraftMbedBaseを拡張する必要があります。
+
+### AircraftBaseの拡張
+- 準備中・発射待機・飛行中・着陸　以外の状態を持つ
+- Mbed再起動・準備完了・センサーのチェック・サーボモーターを閉じる　以外のコマンドが存在する
+
+以上の機能を実装するためにはAircraftBase及びAircraftMbedBaseの拡張が必要です。
+
+
