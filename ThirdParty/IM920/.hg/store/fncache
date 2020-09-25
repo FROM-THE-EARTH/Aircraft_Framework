@@ -1,0 +1,8 @@
+data/IM920_cmd.cpp.i
+data/IM920_conf.h.i
+data/IM920.cpp.i
+data/IM920_msg.cpp.i
+data/IM920.h.i
+data/IM920_util.cpp.i
+data/IM920_hal.cpp.i
+data/CBuffer.h.i
