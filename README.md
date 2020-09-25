@@ -14,7 +14,7 @@
 ### Todo: Arduino等
 
 ## サンプルプログラム
-本フレームワークを使用した電装のリポジトリ（[**FTE09ちんちろりん**]()）
+本フレームワークを使用した電装のリポジトリ（[**FTE09ちんちろりん**](https://github.com/FROM-THE-EARTH/FTE09_chinchirorin)）
 
 ## 構成
 ### Aircraft
