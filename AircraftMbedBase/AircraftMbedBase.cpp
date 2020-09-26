@@ -1,12 +1,15 @@
 #include "AircraftMbedBase.h"
 #include "Utils.h"
+#include "Nature.h"
 
 bool AircraftMbedBase::initialize()
 {
 
   // IM920
-  receiver_->initialize();
   transmitter_->initialize();
+  transmitter_->transmit("Initializing");
+
+  receiver_->initialize();
   if (receiver_->isAvailable())
   {
     receiver_->attach(this, &AircraftMbedBase::onReceive);
@@ -31,7 +34,7 @@ bool AircraftMbedBase::initialize()
   lps_->setDataRate(LPS331_I2C_DATARATE_25HZ);
 
   // datas
-  datas.maxAltitude = -1000;
+  datas.maxAltitude = -1000.0f;
 
   transmitter_->transmit("Initialized");
 
@@ -68,11 +71,11 @@ void AircraftMbedBase::end()
   timer_.stop();
 }
 
-void AircraftMbedBase::waiting() {}
+void AircraftMbedBase::waiting() { writeDatas(); }
 
 void AircraftMbedBase::waitingLaunch()
 {
-  if (datas.accel.length() > launchThreshold)
+  if (launchCondition())
   {
     beginRecord();
     scene = Scene::InFlight;
@@ -84,22 +87,20 @@ void AircraftMbedBase::inFlight()
 
   writeDatas();
 
-  if (std::chrono::duration_cast<std::chrono::milliseconds>(
-          timer_.elapsed_time())
-          .count() > landingTime)
+  if (landingCondition())
   {
     endRecord();
     scene = Scene::Landing;
   }
 
-  if (detachAircraft())
+  if (detachCondition())
   {
-    // detach
+    detachAircraft();
   }
 
-  if (openParachute())
+  if (decelerationCondition())
   {
-    // open parachute
+    openParachute();
   }
 }
 
@@ -141,7 +142,9 @@ void AircraftMbedBase::getDatas()
 void AircraftMbedBase::writeDatas()
 {
   // sd write
-  transmitter_->transmit("Writing");
+  // transmitter_->transmit("Writing");
+
+  transmitter_->transmit("Pres: " + std::to_string(datas.pressure) + ", Temp: " + std::to_string(datas.temperature));
 }
 
 void AircraftMbedBase::onReceive()

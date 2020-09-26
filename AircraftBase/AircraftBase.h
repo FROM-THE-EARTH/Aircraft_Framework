@@ -2,7 +2,6 @@
 #include <chrono>
 #include <string>
 
-
 class AircraftBase {
 
 protected:
@@ -16,10 +15,6 @@ protected:
     ClosingServo
   };
 
-  const float launchThreshold;
-  const float landingTime;
-  const float basePressure;
-
   Datas datas;
   Scene scene = Scene::Waiting;
 
@@ -30,9 +25,7 @@ public:
   void begin();
 
 protected:
-  AircraftBase(float launchThreshold, float landingTime, float basePressure)
-      : launchThreshold(launchThreshold), landingTime(landingTime),
-        basePressure(basePressure) {}
+  AircraftBase(){}
 
   // whether to show debug
   virtual void setDebugMode(bool mode) = 0;
@@ -53,8 +46,6 @@ protected:
   virtual void waitingLaunch() = 0;
 
   // in flight
-  virtual bool detachAircraft() = 0;
-  virtual bool openParachute() = 0;
   virtual void inFlight() = 0;
 
   // landing
@@ -70,6 +61,7 @@ protected:
   virtual void onReceive() = 0;
   virtual Commands checkCommand(std::string recv) = 0;
 
+  // recording
   void beginRecord() { recording = true; }
 
   void endRecord() { recording = false; }

@@ -1,21 +1,23 @@
 #include "IM920Wrapper.h"
 
 void IM920Wrapper::transmit(std::string str) {
-  const string s = name() + ":";
+  const string s = name() + "->" + str;
 
-  if (sendToSerial_ && serial_->writable()) {
+  if (sendToSerial_) {
     printf("[Debug]");
     printf("%s", s.c_str());
     printf("\r\n");
   }
 
-  const size_t size = s.size() + 1;
-  char *buf = new char[size];
-  strcpy(buf, s.c_str());
+  if (isAvailable()) {
+    const size_t size = s.size() + 1;
+    char *buf = new char[size];
+    strcpy(buf, s.c_str());
 
-  IM920::send(buf, size);
+    IM920::send(buf, size);
 
-  delete[] buf;
+    delete[] buf;
+  }
 }
 
 std::string IM920Wrapper::receive() {
@@ -26,7 +28,7 @@ std::string IM920Wrapper::receive() {
 
   const std::string str = buf;
 
-  if (sendToSerial_ && serial_->writable()) {
+  if (sendToSerial_) {
     printf("[Debug]");
     printf("%s", str.c_str());
     printf("\r\n");
