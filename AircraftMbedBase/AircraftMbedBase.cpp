@@ -71,7 +71,9 @@ void AircraftMbedBase::end()
   timer_.stop();
 }
 
-void AircraftMbedBase::waiting() { writeDatas(); }
+void AircraftMbedBase::waiting() {
+  beginRecord();
+}
 
 void AircraftMbedBase::waitingLaunch()
 {
@@ -84,9 +86,6 @@ void AircraftMbedBase::waitingLaunch()
 
 void AircraftMbedBase::inFlight()
 {
-
-  writeDatas();
-
   if (landingCondition())
   {
     endRecord();

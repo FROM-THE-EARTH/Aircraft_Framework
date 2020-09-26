@@ -1,10 +1,16 @@
 #include "AircraftBase.h"
 
-void AircraftBase::begin() {
-  while (1) {
+void AircraftBase::begin()
+{
+  while (true)
+  {
     getDatas();
-    
-    switch (scene) {
+
+    if (recording)
+      writeDatas();
+
+    switch (scene)
+    {
     case Scene::Waiting:
       waiting();
       break;
