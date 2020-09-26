@@ -18,11 +18,15 @@
 
 ## 構成
 ### Aircraft
-- Aircraft: 分離条件、開傘条件を記述するための、AircraftMbedBaseクラスを継承したクラスです。
 
-- AircraftMbedBase: Mbed用にAircraftBaseクラスを継承した抽象クラスです。主要な実装はすべてここに記述されています。
+- AircraftBase: 一般的な機体を対象にした抽象クラスです。<br>
+　電装のメインループの動作（データ取得→（準備中→発射待機→飛行中→着地後））の流れを記述しています。このクラスではこれらの具体的な動作については実装していません。
 
-- AircraftBase: 一般的なハイブリッドロケットを対象にした抽象クラスです。
+- AircraftMbedBase: Mbed用にAircraftBaseクラスを継承した抽象クラスです。<br>
+　主要な実装はここでされています、データ取得書き込みの方法（どのモジュールをどのように実行するか）や、各シーケンスの動作などを記述しています。
+
+- Aircraft: 各種条件や動作を記述するための、AircraftMbedBaseクラスを継承したクラスです。<br>
+　AircraftMbedBaseクラスによって、機体に搭載されたモジュールが全て動作するという前提の元、個々の機体によって異なる条件（離床分離開傘）やその時の動作（分離時は点火、開傘時はサーボを動かすなど）を記述します。
 
 ### ModuleWrapper
 - ModuleWrapper: ライブラリによって異なる実装をなるべく統一した形で記述できるようにするための抽象クラスです。
@@ -34,7 +38,10 @@
 2. main.cppにAircraft.hをincludeして以下のようなコードを記述する（適宜pinや名前は変える）
 3. 製作するロケットに応じて分離条件、開傘条件を以下のように記述する。
 4. LPC1768向けにビルドする
-5. 失敗する場合はMbed OSバージョンが違う可能性があります。動作確認済みのバージョンは6.2.0です。[**ここ**](https://os.mbed.com/mbed-os/releases/)からMbed OSのダウンロードができます。
+
+失敗する場合はMbed OSバージョンが違う可能性があります。動作確認済みのバージョンは6.2.0です。[**ここ**](https://os.mbed.com/mbed-os/releases/)からMbed OSのダウンロードができます。
+
+搭載しているモジュールが異なる場合は必要に応じて書き換えて下さい。
 
 ```C++
 /* main.cpp */ 
@@ -42,19 +49,12 @@
 
 constexpr float launchThreshold = 2.5;    // G
 constexpr float landingTime = 140 * 1000; // ms
-constexpr float basePressure = 1015.0;    // Pa
 
-// modules
-IM920Wrapper receiver("Receiver_A",p28, p27, p29, p30);
-IM920Wrapper transmitter("Sender_A", p28, p27, p29, p30);
-LPSWrapper lps331("LPS331_A", p9, p10, LPS331_I2C_SA0_HIGH);
-LSMWrapper lsm("LSM9DS1_A", p9, p10);
+Aircraft aircraft(launchThreshold, landingTime);
 
-Aircraft aircraft(launchThreshold, landingTime, basePressure, &receiver, &transmitter,
-                   &lps331, &lsm);
+int main() {
+  printf("Hello Mbed\r\n");
 
-int main()
-{
   aircraft.setDebugMode(true);
 
   aircraft.initialize();
@@ -68,19 +68,34 @@ int main()
 /* Aircraft.cpp */
 #include "Aircraft.h"
 
-//分離条件
-bool Aircraft::detachFlag() {
-
-  return (datas.altitude > 500);//trueであれば分離
-  
-  //多段式でないなら
-  //return false;
+//離床条件
+bool Aircraft::launchCondition(){
+  return 加速度 > 2.5G;
 }
 
-//開傘条件
-bool Aircraft::decelerationFlag() {
+//分離条件
+bool Aircraft::detachCondition() {
+  return (経過時間 - 離床時間) > 8.0s;
+}
 
-  return (datas.altitude < datas.maxAltitude - 10);//trueであれば開傘
+//減速機構作動条件
+bool Aircraft::decelerationCondition() {
+  return 高度 < (最高高度 - 10m);
+}
+
+//着地判定条件
+bool Aircraft::landingCondition(){
+  return (経過時間 - 開傘時間) > 120.0s;
+}
+
+//分離時の動作
+void Aircraft::detachAircraft(){
+  点火電装に信号を送信
+}
+
+//パラシュート開傘時の動作
+void Aircraft::openParachute(){
+  サーボを動かす
 }
 ```
 
