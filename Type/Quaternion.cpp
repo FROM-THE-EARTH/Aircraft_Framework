@@ -1,9 +1,9 @@
 #include "Quaternion.h"
 
-Quaternion::Quaternion(float angle, float direction) {
+Quaternion::Quaternion(float direction, float elevation) {
 	
 	const float yaw = direction * PI / 180.0f;
-	const float pitch = -angle * PI / 180.0f;
+	const float pitch = -elevation * PI / 180.0f;
 	const float roll = 0.0f;
 	
 	const float

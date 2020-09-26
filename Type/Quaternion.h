@@ -25,7 +25,7 @@ struct Quaternion
     {
     }
 
-    Quaternion(float angle, float direction);
+    Quaternion(float direction, float elevation);
 
     /*========================method=============================*/
 
