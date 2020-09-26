@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Vec3.h"
+#include "Quaternion.h"
 
 struct Datas
 {
@@ -11,6 +12,7 @@ struct Datas
   Vec3 accel, gyro, magn;
   float latitude, longitude;
   float altitude;
+  Quaternion quaternion;
 
   //Special values
   float launchTime, detachTime, decelerationTime, landingTime;
