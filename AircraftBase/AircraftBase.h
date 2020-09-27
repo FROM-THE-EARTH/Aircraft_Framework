@@ -1,10 +1,8 @@
 #include "Datas.h"
-#include <chrono>
 #include <string>
 
 class AircraftBase
 {
-
 protected:
   enum class Scene
   {
@@ -33,7 +31,13 @@ public:
   void begin();
 
 protected:
-  AircraftBase() {}
+  AircraftBase()
+  {
+    //bootTime=std::chrono::system_clock::now();
+  }
+
+  // time step etc...
+  virtual void update() = 0;
 
   // whether to show debug
   virtual void setDebugMode(bool mode) = 0;
@@ -76,4 +80,7 @@ protected:
 
   // end recording datas
   void endRecord() { recording = false; }
+
+private:
+  void updateQuaternion();
 };

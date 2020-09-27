@@ -3,20 +3,22 @@
 #include "Vec3.h"
 #include "Quaternion.h"
 
+
 struct Datas
 {
   //Current values
-  float time;
-  float temperature;
-  float pressure;
-  Vec3 accel, gyro, magn;
-  float latitude, longitude;
-  float altitude;
-  Quaternion quaternion;
+  float time, deltaTime;//[s]
+  float temperature;//[C]
+  float pressure;//[Pa]
+  Vec3 accel, gyro, magn;//[G, dps, gauss]
+  float latitude, longitude;//
+  float altitude;//[m]
+  Quaternion quaternion;//(x, y, z, w)
 
   //Special values
-  float launchTime, detachTime, decelerationTime, landingTime;
+  //bootTime is the time when modules were initialized
+  float bootTime, launchTime, detachTime, decelerationTime, landingTime;//[s]
 
   //Max, Min
-  float maxAltitude;
+  float maxAltitude;//[m]
 };

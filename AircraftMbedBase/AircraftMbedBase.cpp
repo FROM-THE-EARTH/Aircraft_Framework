@@ -32,15 +32,29 @@ bool AircraftMbedBase::initialize()
   // setting
   lps_->setResolution(LPS331_I2C_PRESSURE_AVG_512, LPS331_I2C_TEMP_AVG_128);
   lps_->setDataRate(LPS331_I2C_DATARATE_25HZ);
-
-  // datas
-  datas.maxAltitude = -1000.0f;
+  lsm_->setGyroScale(LSM9DS1::gyro_scale::G_SCALE_500DPS);
 
   transmitter_->transmit("Initialized");
 
-  timer_.start();
+  datas.maxAltitude = -1000.0f;
+  datas.bootTime = 0.0f;
+
+  bootTime = Kernel::Clock::now();
+  nowTime = bootTime;
+  preTime = nowTime;
 
   return isReady();
+}
+
+void AircraftMbedBase::update()
+{
+  nowTime = Kernel::Clock::now();
+
+  datas.deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(nowTime - preTime).count() * 0.000001f;
+
+  preTime = nowTime;
+
+  datas.time = std::chrono::duration_cast<std::chrono::microseconds>(nowTime - bootTime).count() * 0.000001f;
 }
 
 bool AircraftMbedBase::isReady(bool showDetail)
@@ -67,7 +81,6 @@ bool AircraftMbedBase::isReady(bool showDetail)
 void AircraftMbedBase::end()
 {
   // end processing
-  timer_.stop();
 }
 
 void AircraftMbedBase::waiting()
@@ -79,6 +92,7 @@ void AircraftMbedBase::waitingLaunch()
 {
   if (launchCondition())
   {
+    datas.launchTime = datas.time;
     beginRecord();
     scene = Scene::InFlight;
   }
@@ -86,20 +100,23 @@ void AircraftMbedBase::waitingLaunch()
 
 void AircraftMbedBase::inFlight()
 {
-  if (landingCondition())
-  {
-    endRecord();
-    scene = Scene::Landing;
-  }
-
   if (detachCondition())
   {
+    datas.detachTime = datas.time;
     detachAircraft();
   }
 
   if (decelerationCondition())
   {
+    datas.decelerationTime = datas.time;
     openParachute();
+  }
+
+  if (landingCondition())
+  {
+    datas.landingTime = datas.time;
+    endRecord();
+    scene = Scene::Landing;
   }
 }
 
@@ -115,9 +132,9 @@ void AircraftMbedBase::getDatas()
   lsm_->readGyro();
   lsm_->readMag();
 
-  datas.time = std::chrono::duration_cast<std::chrono::milliseconds>(
+  /*datas.time = std::chrono::duration_cast<std::chrono::milliseconds>(
                    timer_.elapsed_time())
-                   .count();
+                   .count();*/
 
   datas.pressure = lps_->getPressure();
   datas.temperature = lps_->getTemperature();
@@ -143,7 +160,10 @@ void AircraftMbedBase::writeDatas()
   // sd write
   // transmitter_->transmit("Writing");
 
-  transmitter_->transmit("Pres: " + std::to_string(datas.pressure) + ", Temp: " + std::to_string(datas.temperature));
+  //transmitter_->transmit("Pres: " + std::to_string(datas.pressure) + ", Temp: " + std::to_string(datas.temperature));
+  //transmitter_->transmit("Angle: " + std::to_string(datas.quaternion.toAngle()));
+  //transmitter_->transmit("Quat: " + datas.quaternion.toString());
+  transmitter_->transmit("Gyro: " + datas.gyro.toString());
 }
 
 void AircraftMbedBase::onReceive()

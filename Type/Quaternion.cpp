@@ -2,30 +2,26 @@
 
 Quaternion::Quaternion(float direction, float elevation)
 {
+	x = std::tan((90 - elevation) * PI / 180.0f);
+	y = 0;
+	z = 1;
+	w = 0;
 
-	const float yaw = direction * PI / 180.0f;
-	const float pitch = -elevation * PI / 180.0f;
-	const float roll = 0.0f;
-
-	const float
-		cy = cos(yaw * 0.5f),
-		sy = sin(yaw * 0.5f),
-		cp = cos(pitch * 0.5f),
-		sp = sin(pitch * 0.5f),
-		cr = cos(roll * 0.5f),
-		sr = sin(roll * 0.5f);
-
-	x = cy * cp * sr - sy * sp * cr;
-	y = sy * cp * sr + cy * sp * cr;
-	z = sy * cp * cr - cy * sp * sr;
-	w = cy * cp * cr + sy * sp * sr;
+	*this = normalized();
 }
 
 Quaternion Quaternion::angularVelocityApplied(const Vec3 &v)
 {
-	return {
+	/*return {
 		0.5f * (y * v.z - z * v.y + w * v.x),
 		0.5f * (-x * v.z + z * v.x + w * v.y),
 		0.5f * (x * v.y - y * v.x + w * v.z),
+		0.5f * (-x * v.x - y * v.y - z * v.z)};*/
+
+		
+	return {
+		0.5f * (-y * v.z + z * v.y + w * v.x),
+		0.5f * (x * v.z - z * v.x + w * v.y),
+		0.5f * (-x * v.y + y * v.x + w * v.z),
 		0.5f * (-x * v.x - y * v.y - z * v.z)};
 }

@@ -31,9 +31,7 @@ bool Aircraft::decelerationCondition()
 
 bool Aircraft::landingCondition()
 {
-  return std::chrono::duration_cast<std::chrono::milliseconds>(
-             timer_.elapsed_time())
-             .count() > landingTime_;
+  return  (datas.launchTime-datas.time) > landingTime_;
 }
 
 void Aircraft::detachAircraft()

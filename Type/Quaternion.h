@@ -1,8 +1,7 @@
 #pragma once
 
 #include "Vec3.h"
-
-constexpr float PI = 3.141592654f;
+#include "MathConstants.h"
 
 struct Quaternion
 {
@@ -46,9 +45,13 @@ struct Quaternion
 
     float toAngle() const
     {
-        Quaternion q(1.0f, 0.0f, 0.0f, 0.0f);
+        /*Quaternion q(1.0f, 0.0f, 0.0f, 0.0f);
         q = *this * q * conjugate();
-        return acos(sqrt(q.x * q.x + q.y * q.y) / sqrt(q.x * q.x + q.y * q.y + q.z * q.z)) * 180.0f / PI;
+        return acos(sqrt(q.x * q.x + q.y * q.y) / sqrt(q.x * q.x + q.y * q.y + q.z * q.z)) * 180.0f / PI;*/
+
+        const float xyz = std::signbit(z) ? -sqrt(x * x + y * y + z * z) : sqrt(x * x + y * y + z * z);
+
+        return acos(sqrt(x * x + y * y) / xyz) * 180.0f / PI;
     }
 
     /*=======================method================================*/
@@ -96,6 +99,11 @@ struct Quaternion
     constexpr Quaternion operator*(float value) const
     {
         return {x * value, y * value, z * value, w * value};
+    }
+
+    constexpr Quaternion operator/(float value) const
+    {
+        return {x / value, y / value, z / value, w / value};
     }
 };
 

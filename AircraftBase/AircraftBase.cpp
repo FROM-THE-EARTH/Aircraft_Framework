@@ -1,10 +1,15 @@
 #include "AircraftBase.h"
+#include "Utils.h"
 
 void AircraftBase::begin()
 {
   while (true)
   {
+    update();
+
     getDatas();
+
+    updateQuaternion();
 
     if (recording)
       writeDatas();
@@ -28,4 +33,10 @@ void AircraftBase::begin()
       break;
     }
   }
+}
+
+void AircraftBase::updateQuaternion()
+{
+  datas.quaternion += datas.quaternion.angularVelocityApplied(Utils::dpsToAngularVel(datas.gyro)) * datas.deltaTime;
+  datas.quaternion = datas.quaternion.normalized();
 }

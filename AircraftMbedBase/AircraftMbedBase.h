@@ -6,7 +6,10 @@
 
 class AircraftMbedBase : public AircraftBase {
 protected:
-  Timer timer_;
+
+   Kernel::Clock::time_point bootTime;
+   Kernel::Clock::time_point nowTime;
+   Kernel::Clock::time_point preTime;
 
   // modules
   IM920Wrapper *receiver_, *transmitter_;
@@ -47,6 +50,8 @@ public:
   }
 
 private:
+  virtual void update() override;
+
   virtual bool isReady(bool showDetail = false) override;
 
   virtual void end() override;
