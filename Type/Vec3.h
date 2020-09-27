@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include <string>
 
 struct Vec3
 {
@@ -17,6 +18,11 @@ struct Vec3
   }
 
   /*========================method=============================*/
+
+  std::string toString() const
+  {
+    return std::string("(" + std::to_string(x) + "," + std::to_string(y) + "," + std::to_string(z) + ")");
+  }
 
   float length() const
   {

@@ -29,6 +29,11 @@ struct Quaternion
 
     /*========================method=============================*/
 
+    std::string toString() const
+    {
+        return std::string("(" + std::to_string(x) + "," + std::to_string(y) + "," + std::to_string(z) + "," + std::to_string(w) + ")");
+    }
+
     float length() const
     {
         return std::sqrt(x * x + y * y + z * z + w * w);
