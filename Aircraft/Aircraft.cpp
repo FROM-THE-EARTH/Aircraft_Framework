@@ -1,6 +1,6 @@
 #include "Aircraft.h"
 
-Aircraft::Aircraft(float launchThreshold, float landingTime, float launcherDirection, float launcherElevation)
+Aircraft::Aircraft(float launchThreshold, float landingTime)
     : receiver_("Receiver_A", p28, p27, p29, p30),
       transmitter_("Sender_A", p28, p27, p29, p30),
       lps331_("LPS331_A", p9, p10, LPS331_I2C_SA0_HIGH),
@@ -11,7 +11,6 @@ Aircraft::Aircraft(float launchThreshold, float landingTime, float launcherDirec
 
       AircraftMbedBase(&receiver_, &transmitter_, &lps331_, &lsm_)
 {
-  datas.quaternion = Quaternion(launcherDirection, launcherElevation);
 }
 
 bool Aircraft::launchCondition()

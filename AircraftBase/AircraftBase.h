@@ -1,8 +1,14 @@
 #include "Datas.h"
+#include "MadgwickAHRS.h"
 #include <string>
 
 class AircraftBase
 {
+  bool recording_ = false;
+  bool imuFilter_ = true;
+
+  Madgwick madgwick;
+
 protected:
   enum class Scene
   {
@@ -24,8 +30,6 @@ protected:
   Datas datas;
   Scene scene = Scene::Waiting;
 
-  bool recording = false;
-
 public:
   // main loop
   void begin();
@@ -46,7 +50,7 @@ protected:
   virtual bool initialize() = 0;
 
   // is all modules available
-  virtual bool isReady(bool showDetail = false) = 0;
+  virtual bool isReady(bool showDetail = true) = 0;
 
   // end processing
   virtual void end() = 0;
@@ -73,14 +77,17 @@ protected:
   virtual void onReceive() = 0;
 
   // check received command
-  virtual Commands checkCommand(const std::string &recv) = 0;
+  Commands checkCommand(const std::string &recv);
 
   // start recording datas
-  void beginRecord() { recording = true; }
+  void beginRecord() { recording_ = true; }
 
   // end recording datas
-  void endRecord() { recording = false; }
+  void endRecord() { recording_ = false; }
+
+  // madgwick filter
+  void setIMUFilter(bool on) { imuFilter_ = on; }
 
 private:
-  void updateQuaternion();
+  void applyIMUFilter();
 };

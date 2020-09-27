@@ -12,10 +12,4 @@ namespace Utils
     return (std::pow(pressure0 / pressure, 0.1902225603956629f) - 1) *
            (temperature + 273.15) * 153.8461538461538;
   }
-
-  Vec3 dpsToAngularVel(const Vec3 &v)
-  {
-    return v * PI / 180;
-  }
-
 }

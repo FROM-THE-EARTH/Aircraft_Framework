@@ -9,10 +9,15 @@ void AircraftBase::begin()
 
     getDatas();
 
-    updateQuaternion();
+    if (imuFilter_)
+    {
+      applyIMUFilter();
+    }
 
-    if (recording)
+    if (recording_)
+    {
       writeDatas();
+    }
 
     switch (scene)
     {
@@ -35,8 +40,32 @@ void AircraftBase::begin()
   }
 }
 
-void AircraftBase::updateQuaternion()
+AircraftBase::Commands AircraftBase::checkCommand(const std::string &recv)
 {
-  datas.quaternion += datas.quaternion.angularVelocityApplied(Utils::dpsToAngularVel(datas.gyro)) * datas.deltaTime;
-  datas.quaternion = datas.quaternion.normalized();
+  if (recv == "reset")
+  {
+    return Commands::ResetMbed;
+  }
+  if (recv == "escape")
+  {
+    return Commands::EscapePreparing;
+  }
+  if (recv == "check")
+  {
+    return Commands::CheckSensors;
+  }
+  if (recv == "svclose")
+  {
+    return Commands::ClosingServo;
+  }
+  return Commands::None;
+}
+
+void AircraftBase::applyIMUFilter()
+{
+  madgwick.update(datas.accel, datas.gyro, /*datas.magn,*/ datas.deltaTime);
+  
+  datas.roll = madgwick.getRoll();
+  datas.pitch = madgwick.getPitch();
+  datas.yaw = madgwick.getYaw();
 }

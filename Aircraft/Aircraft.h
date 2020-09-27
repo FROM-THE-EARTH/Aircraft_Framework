@@ -15,7 +15,7 @@ class Aircraft : public AircraftMbedBase
   // PwmOut servo_1(p21), servo_2(p22), servo_3(p23);
 
 public:
-  Aircraft(float launchThreshold, float landingTime, float launcherDirection, float launcherElevation);
+  Aircraft(float launchThreshold, float landingTime);
 
 private:
   virtual bool launchCondition() override;

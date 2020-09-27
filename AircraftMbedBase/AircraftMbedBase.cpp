@@ -4,7 +4,6 @@
 
 bool AircraftMbedBase::initialize()
 {
-
   // IM920
   transmitter_->initialize();
   transmitter_->transmit("Initializing");
@@ -17,9 +16,12 @@ bool AircraftMbedBase::initialize()
 
   // LSM9DS1
   lsm_->initialize();
+  lsm_->setGyroScale(LSM9DS1::gyro_scale::G_SCALE_500DPS);
 
   // LPS331
   lps_->initialize();
+  lps_->setResolution(LPS331_I2C_PRESSURE_AVG_512, LPS331_I2C_TEMP_AVG_128);
+  lps_->setDataRate(LPS331_I2C_DATARATE_25HZ);
 
   // SD
   /*fp = fopen("/sd/data.csv", "w");
@@ -29,16 +31,13 @@ bool AircraftMbedBase::initialize()
 
   // GPS
 
-  // setting
-  lps_->setResolution(LPS331_I2C_PRESSURE_AVG_512, LPS331_I2C_TEMP_AVG_128);
-  lps_->setDataRate(LPS331_I2C_DATARATE_25HZ);
-  lsm_->setGyroScale(LSM9DS1::gyro_scale::G_SCALE_500DPS);
-
   transmitter_->transmit("Initialized");
 
+  //initialize datas
   datas.maxAltitude = -1000.0f;
   datas.bootTime = 0.0f;
-
+  
+  //initialize time
   bootTime = Kernel::Clock::now();
   nowTime = bootTime;
   preTime = nowTime;
@@ -50,11 +49,12 @@ void AircraftMbedBase::update()
 {
   nowTime = Kernel::Clock::now();
 
+  datas.time = std::chrono::duration_cast<std::chrono::microseconds>(nowTime - bootTime).count() * 0.000001f;
+
   datas.deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(nowTime - preTime).count() * 0.000001f;
 
   preTime = nowTime;
 
-  datas.time = std::chrono::duration_cast<std::chrono::microseconds>(nowTime - bootTime).count() * 0.000001f;
 }
 
 bool AircraftMbedBase::isReady(bool showDetail)
@@ -132,10 +132,6 @@ void AircraftMbedBase::getDatas()
   lsm_->readGyro();
   lsm_->readMag();
 
-  /*datas.time = std::chrono::duration_cast<std::chrono::milliseconds>(
-                   timer_.elapsed_time())
-                   .count();*/
-
   datas.pressure = lps_->getPressure();
   datas.temperature = lps_->getTemperature();
 
@@ -157,13 +153,7 @@ void AircraftMbedBase::getDatas()
 
 void AircraftMbedBase::writeDatas()
 {
-  // sd write
-  // transmitter_->transmit("Writing");
-
-  //transmitter_->transmit("Pres: " + std::to_string(datas.pressure) + ", Temp: " + std::to_string(datas.temperature));
-  //transmitter_->transmit("Angle: " + std::to_string(datas.quaternion.toAngle()));
-  //transmitter_->transmit("Quat: " + datas.quaternion.toString());
-  transmitter_->transmit("Gyro: " + datas.gyro.toString());
+  transmitter_->transmit("("+std::to_string(datas.roll)+", "+std::to_string(datas.pitch)+", "+std::to_string(datas.yaw)+")");
 }
 
 void AircraftMbedBase::onReceive()
@@ -190,26 +180,4 @@ void AircraftMbedBase::onReceive()
     transmitter_->transmit("Invalid command");
     break;
   }
-}
-
-AircraftBase::Commands AircraftMbedBase::checkCommand(const std::string &recv)
-{
-
-  if (recv == "reset")
-  {
-    return Commands::ResetMbed;
-  }
-  if (recv == "escape")
-  {
-    return Commands::EscapePreparing;
-  }
-  if (recv == "check")
-  {
-    return Commands::CheckSensors;
-  }
-  if (recv == "svclose")
-  {
-    return Commands::ClosingServo;
-  }
-  return Commands::None;
 }

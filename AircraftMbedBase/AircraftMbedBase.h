@@ -6,10 +6,9 @@
 
 class AircraftMbedBase : public AircraftBase {
 protected:
-
-   Kernel::Clock::time_point bootTime;
-   Kernel::Clock::time_point nowTime;
-   Kernel::Clock::time_point preTime;
+  Kernel::Clock::time_point bootTime;
+  Kernel::Clock::time_point nowTime;
+  Kernel::Clock::time_point preTime;
 
   // modules
   IM920Wrapper *receiver_, *transmitter_;
@@ -69,6 +68,4 @@ private:
   virtual void writeDatas() override;
 
   virtual void onReceive() override;
-
-  virtual Commands checkCommand(const std::string &recv) override;
 };
