@@ -15,5 +15,8 @@ public:
     available = LSM9DS1::begin();
   }
 
-  virtual bool isAvailable() override { return available && LSM9DS1::whoAmI(); }
+  virtual bool isAvailable() override
+  {
+    return available && LSM9DS1::whoAmI();
+  }
 };

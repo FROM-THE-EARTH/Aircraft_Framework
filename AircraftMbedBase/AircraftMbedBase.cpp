@@ -59,8 +59,7 @@ bool AircraftMbedBase::isReady(bool showDetail)
     transmitter_->transmit(lps_->status());
     transmitter_->transmit(lsm_->status());
   }
-  transmitter_->transmit("Modules: " +
-                         std::string(allModulesAvailable ? "OK" : "NG"));
+  transmitter_->transmit("Modules: " + std::string(allModulesAvailable ? "OK" : "NG"));
 
   return allModulesAvailable;
 }
@@ -71,7 +70,8 @@ void AircraftMbedBase::end()
   timer_.stop();
 }
 
-void AircraftMbedBase::waiting() {
+void AircraftMbedBase::waiting()
+{
   beginRecord();
 }
 
@@ -172,7 +172,7 @@ void AircraftMbedBase::onReceive()
   }
 }
 
-AircraftMbedBase::Commands AircraftMbedBase::checkCommand(std::string recv)
+AircraftBase::Commands AircraftMbedBase::checkCommand(const std::string &recv)
 {
 
   if (recv == "reset")

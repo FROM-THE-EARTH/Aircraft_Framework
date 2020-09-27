@@ -18,7 +18,7 @@ struct Vec3
 
   /*========================method=============================*/
 
-  constexpr float length() const
+  float length() const
   {
     return std::sqrt(x * x + y * y + z * z);
   }

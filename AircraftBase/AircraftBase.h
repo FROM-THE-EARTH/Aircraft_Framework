@@ -2,12 +2,20 @@
 #include <chrono>
 #include <string>
 
-class AircraftBase {
+class AircraftBase
+{
 
 protected:
-  enum class Scene { Waiting, ReadyToLaunch, InFlight, Landing };
+  enum class Scene
+  {
+    Waiting,
+    ReadyToLaunch,
+    InFlight,
+    Landing
+  };
 
-  enum class Commands {
+  enum class Commands
+  {
     None,
     ResetMbed,
     EscapePreparing,
@@ -25,7 +33,7 @@ public:
   void begin();
 
 protected:
-  AircraftBase(){}
+  AircraftBase() {}
 
   // whether to show debug
   virtual void setDebugMode(bool mode) = 0;
@@ -57,12 +65,15 @@ protected:
   // write datas
   virtual void writeDatas() = 0;
 
-  // Receiver
+  // on receive command
   virtual void onReceive() = 0;
-  virtual Commands checkCommand(std::string recv) = 0;
 
-  // recording
+  // check received command
+  virtual Commands checkCommand(const std::string &recv) = 0;
+
+  // start recording datas
   void beginRecord() { recording = true; }
 
+  // end recording datas
   void endRecord() { recording = false; }
 };

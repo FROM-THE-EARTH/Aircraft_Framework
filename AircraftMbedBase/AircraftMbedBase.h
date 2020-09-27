@@ -65,5 +65,5 @@ private:
 
   virtual void onReceive() override;
 
-  virtual Commands checkCommand(std::string recv) override;
+  virtual Commands checkCommand(const std::string &recv) override;
 };

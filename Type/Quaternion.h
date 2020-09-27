@@ -29,33 +29,32 @@ struct Quaternion
 
     /*========================method=============================*/
 
-    float length()
+    float length() const
     {
-        return sqrt(x * x + y * y + z * z + w * w);
+        return std::sqrt(x * x + y * y + z * z + w * w);
     }
 
-    Quaternion normalized()
+    Quaternion normalized() const
     {
         return {x / length(), y / length(), z / length(), w / length()};
     }
 
-    float toAngle()
+    float toAngle() const
     {
-        Quaternion q(1, 0, 0, 0);
+        Quaternion q(1.0f, 0.0f, 0.0f, 0.0f);
         q = *this * q * conjugate();
-        return acos(sqrt(q.x * q.x + q.y * q.y) / sqrt(q.x * q.x + q.y * q.y + q.z * q.z)) * 180 / PI;
+        return acos(sqrt(q.x * q.x + q.y * q.y) / sqrt(q.x * q.x + q.y * q.y + q.z * q.z)) * 180.0f / PI;
     }
 
     /*=======================method================================*/
 
     //return the quaternion angular velocity applied
-    Quaternion angularVelocityApplied(Vec3 v);
+    Quaternion angularVelocityApplied(const Vec3 &v);
 
     //return the conjugate quaternion
-    Quaternion conjugate() const
+    constexpr Quaternion conjugate() const
     {
-        return {
-            -x, -y, -z, w};
+        return {-x, -y, -z, w};
     }
 
     /*============================operator=========================*/
@@ -94,3 +93,8 @@ struct Quaternion
         return {x * value, y * value, z * value, w * value};
     }
 };
+
+inline constexpr Quaternion operator*(float value, const Quaternion &q)
+{
+    return {value * q.x, value * q.y, value * q.z, value * q.w};
+}

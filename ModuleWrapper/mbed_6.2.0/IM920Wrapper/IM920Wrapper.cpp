@@ -1,7 +1,7 @@
 #include "IM920Wrapper.h"
 
-void IM920Wrapper::transmit(std::string str) {
-  const string s = name() + "->" + str;
+void IM920Wrapper::transmit(const std::string &str) {
+  const std::string s = name() + "->" + str;
 
   if (sendToSerial_) {
     printf("[Debug]");

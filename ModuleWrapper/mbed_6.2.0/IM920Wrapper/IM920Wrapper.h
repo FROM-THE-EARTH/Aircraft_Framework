@@ -2,7 +2,8 @@
 #include "ModuleWrapper.h"
 #include <string>
 
-class IM920Wrapper : public IM920, public ModuleWrapper {
+class IM920Wrapper : public IM920, public ModuleWrapper
+{
 
   bool sendToSerial_ = false;
 
@@ -11,13 +12,22 @@ public:
                PinName reset, int baud = IM920_BAUD)
       : IM920(tx, rx, busy, reset, baud), ModuleWrapper(name) {}
 
-  virtual void initialize() override { available = IM920::init(); }
+  virtual void initialize() override
+  {
+    available = IM920::init();
+  }
 
-  virtual bool isAvailable() override { return available; }
+  virtual bool isAvailable() override
+  {
+    return available;
+  }
 
-  void setSendToSerial(bool send) { sendToSerial_ = send; }
+  void setSendToSerial(bool send)
+  {
+    sendToSerial_ = send;
+  }
 
-  void transmit(std::string str);
+  void transmit(const std::string &str);
 
   std::string receive();
 };
