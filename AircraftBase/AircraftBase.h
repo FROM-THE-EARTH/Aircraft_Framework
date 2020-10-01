@@ -4,10 +4,10 @@
 
 class AircraftBase
 {
+  Madgwick madgwick;
+  
   bool recording_ = false;
   bool imuFilter_ = true;
-
-  Madgwick madgwick;
 
 protected:
   enum class Scene
@@ -36,9 +36,7 @@ public:
 
 protected:
   AircraftBase()
-  {
-    //bootTime=std::chrono::system_clock::now();
-  }
+  {}
 
   // time step etc...
   virtual void update() = 0;

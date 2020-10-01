@@ -1,6 +1,7 @@
-#include "AircraftMbedBase.h"
+//#include "AircraftMbedBase.h"
+#include "AircraftWrapper.h"
 
-class Aircraft : public AircraftMbedBase
+class Aircraft : public AircraftWrapper<Kernel::Clock>
 {
   const float launchThreshold_;
   const float landingTime_;

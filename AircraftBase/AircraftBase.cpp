@@ -63,8 +63,9 @@ AircraftBase::Commands AircraftBase::checkCommand(const std::string &recv)
 
 void AircraftBase::applyIMUFilter()
 {
-  madgwick.update(datas.accel, datas.gyro, /*datas.magn,*/ datas.deltaTime);
-  
+  madgwick.update(datas.accel, datas.gyro, datas.deltaTime);
+  //madgwick.update(datas.accel, datas.gyro, datas.magn, datas.deltaTime);
+
   datas.roll = madgwick.getRoll();
   datas.pitch = madgwick.getPitch();
   datas.yaw = madgwick.getYaw();
