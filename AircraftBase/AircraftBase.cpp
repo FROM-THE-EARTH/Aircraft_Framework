@@ -19,21 +19,21 @@ void AircraftBase::begin()
       writeDatas();
     }
 
-    switch (scene)
+    switch (sequence)
     {
-    case Scene::Waiting:
+    case Sequence::Waiting:
       waiting();
       break;
 
-    case Scene::ReadyToLaunch:
+    case Sequence::ReadyToLaunch:
       waitingLaunch();
       break;
 
-    case Scene::InFlight:
+    case Sequence::InFlight:
       inFlight();
       break;
 
-    case Scene::Landing:
+    case Sequence::Landing:
       landing();
       break;
     }
@@ -42,9 +42,9 @@ void AircraftBase::begin()
 
 AircraftBase::Commands AircraftBase::checkCommand(const xString &recv)
 {
-  if (recv == "reset")
+  if (recv == "reboot")
   {
-    return Commands::ResetMbed;
+    return Commands::Reboot;
   }
   if (recv == "escape")
   {

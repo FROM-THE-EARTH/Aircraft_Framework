@@ -12,7 +12,7 @@ class AircraftBase
   bool imuFilter_ = true;
 
 protected:
-  enum class Scene
+  enum class Sequence
   {
     Waiting,
     ReadyToLaunch,
@@ -23,14 +23,14 @@ protected:
   enum class Commands
   {
     None,
-    ResetMbed,
+    Reboot,
     EscapePreparing,
     CheckSensors,
     ClosingServo
   };
 
   Datas datas;
-  Scene scene = Scene::Waiting;
+  Sequence sequence = Sequence::Waiting;
 
 public:
   // main loop

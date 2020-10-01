@@ -4,8 +4,10 @@
 
 class Aircraft : public AircraftWrapper
 {
-  const float launchThreshold_;
-  const float landingTime_;
+  const float launchThreshold_; //[G]
+
+  // (now - openParachuteTime) > landingTime => switching to Landing sequence from InFlight sequence
+  const float landingTime_; //[s]
 
 public:
   Aircraft(float launchThreshold, float landingTime);

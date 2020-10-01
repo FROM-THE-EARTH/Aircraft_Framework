@@ -92,7 +92,7 @@ void AircraftWrapper::waitingLaunch()
   {
     datas.launchTime = datas.time;
     beginRecord();
-    scene = Scene::InFlight;
+    sequence = Sequence::InFlight;
   }
 }
 
@@ -114,7 +114,7 @@ void AircraftWrapper::inFlight()
   {
     datas.landingTime = datas.time;
     endRecord();
-    scene = Scene::Landing;
+    sequence = Sequence::Landing;
   }
 }
 
@@ -158,12 +158,12 @@ void AircraftWrapper::onReceive()
 {
   switch (checkCommand(receiver_.receive()))
   {
-  case Commands::ResetMbed:
+  case Commands::Reboot:
     __NVIC_SystemReset();
     break;
 
   case Commands::EscapePreparing:
-    scene = Scene::ReadyToLaunch;
+    sequence = Sequence::ReadyToLaunch;
     break;
 
   case Commands::CheckSensors:
