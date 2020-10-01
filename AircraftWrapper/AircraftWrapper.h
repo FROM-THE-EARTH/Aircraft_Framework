@@ -1,4 +1,4 @@
-#define PLATFORM_MBED
+//#define PLATFORM_MBED
 //#define PLATFORM_ARDUINO
 
 #ifdef PLATFORM_MBED
