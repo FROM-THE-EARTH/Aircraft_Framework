@@ -39,7 +39,7 @@ bool AircraftWrapper::initialize()
   //initialize datas
   datas.maxAltitude = -1000.0f;
   datas.bootTime = 0.0f;
-  
+
   //initialize time
   timer_.start();
 
@@ -151,7 +151,7 @@ void AircraftWrapper::getDatas()
 
 void AircraftWrapper::writeDatas()
 {
-  transmitter_.transmit("("+to_XString(datas.roll)+", "+to_XString(datas.pitch)+", "+to_XString(datas.yaw)+")");
+  transmitter_.transmit("(" + to_XString(datas.roll) + ", " + to_XString(datas.pitch) + ", " + to_XString(datas.yaw) + ")");
 }
 
 void AircraftWrapper::onReceive()
@@ -159,7 +159,7 @@ void AircraftWrapper::onReceive()
   switch (checkCommand(receiver_.receive()))
   {
   case Commands::Reboot:
-    __NVIC_SystemReset();
+    reboot();
     break;
 
   case Commands::EscapePreparing:

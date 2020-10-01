@@ -5,7 +5,6 @@
 class AircraftWrapper : public AircraftBase
 {
 protected:
-
   Commands commands_ = Commands::None;
 
   AircraftWrapper()
@@ -41,10 +40,6 @@ public:
 private:
   virtual void update() override;
 
-  virtual bool isReady(bool showDetail = false) override;
-
-  virtual void end() override;
-
   virtual void waiting() override;
 
   virtual void waitingLaunch() override;
@@ -52,6 +47,14 @@ private:
   virtual void inFlight() override;
 
   virtual void landing() override;
+
+  virtual void end() override;
+
+  virtual void reboot() override
+  {
+  }
+
+  virtual bool isReady(bool showDetail = false) override;
 
   virtual void getDatas() override;
 

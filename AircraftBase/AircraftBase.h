@@ -43,17 +43,8 @@ protected:
   // time step etc...
   virtual void update() = 0;
 
-  // whether to show debug
-  virtual void setDebugMode(bool mode) = 0;
-
   // initialize modules
   virtual bool initialize() = 0;
-
-  // is all modules available
-  virtual bool isReady(bool showDetail = true) = 0;
-
-  // end processing
-  virtual void end() = 0;
 
   // wait for preparing
   virtual void waiting() = 0;
@@ -66,6 +57,18 @@ protected:
 
   // landing
   virtual void landing() = 0;
+
+  // end processing
+  virtual void end() = 0;
+
+  // whether to show debug
+  virtual void setDebugMode(bool mode) = 0;
+
+  // is all modules available
+  virtual bool isReady(bool showDetail = true) = 0;
+
+  // reboot
+  virtual void reboot() = 0;
 
   // get datas
   virtual void getDatas() = 0;
