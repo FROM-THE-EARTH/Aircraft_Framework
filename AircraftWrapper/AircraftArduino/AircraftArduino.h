@@ -1,26 +1,19 @@
+/*
+Todo: Create framework for Arduino
+*/
+
 #include "AircraftBase.h"
-#include "IM920Wrapper.h"
-#include "LPSWrapper.h"
-#include "LSMWrapper.h"
-#include "mbed.h"
 
-class AircraftMbedBase : public AircraftBase {
+class AircraftWrapper : public AircraftBase
+{
 protected:
-  Kernel::Clock::time_point bootTime;
-  Kernel::Clock::time_point nowTime;
-  Kernel::Clock::time_point preTime;
-
-  // modules
-  IM920Wrapper *receiver_, *transmitter_;
-  LPSWrapper *lps_;
-  LSMWrapper *lsm_;
 
   Commands commands_ = Commands::None;
 
-  AircraftMbedBase(IM920Wrapper *receiver, IM920Wrapper *transmitter,
-                   LPSWrapper *lps, LSMWrapper *lsm)
-      : AircraftBase(),
-        receiver_(receiver), transmitter_(transmitter), lps_(lps), lsm_(lsm) {}
+  AircraftWrapper()
+      : AircraftBase()
+  {
+  }
 
   // set launch condition
   virtual bool launchCondition() = 0;
@@ -43,9 +36,8 @@ protected:
 public:
   virtual bool initialize() override;
 
-  virtual void setDebugMode(bool mode) override {
-    transmitter_->setSendToSerial(mode);
-    receiver_->setSendToSerial(mode);
+  virtual void setDebugMode(bool mode) override
+  {
   }
 
 private:

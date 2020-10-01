@@ -1,3 +1,7 @@
+/*
+This program is developed under the mbed-os 6.2.0
+*/
+
 #include "LSM9DS1.h"
 #include "ModuleWrapper.h"
 

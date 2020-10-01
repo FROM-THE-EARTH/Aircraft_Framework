@@ -1,19 +1,9 @@
-//#include "AircraftMbedBase.h"
 #include "AircraftWrapper.h"
 
-class Aircraft : public AircraftWrapper<Kernel::Clock>
+class Aircraft : public AircraftWrapper
 {
   const float launchThreshold_;
   const float landingTime_;
-
-  //Modules
-  IM920Wrapper receiver_;
-  IM920Wrapper transmitter_;
-  LPSWrapper lps331_;
-  LSMWrapper lsm_;
-  // SDFileSystem sd(p5, p6, p7, p8, "sd");
-  // DigitalIn flightPin(p12);
-  // PwmOut servo_1(p21), servo_2(p22), servo_3(p23);
 
 public:
   Aircraft(float launchThreshold, float landingTime);
