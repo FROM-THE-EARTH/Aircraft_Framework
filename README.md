@@ -11,6 +11,9 @@
 
 ### Todo: Arduino等
 
+  言語仕様が違くて実装が大変そうなので挫折しました。<br>
+  Arduinoに知見のある方、電装開発ついでにフレームワークの方もアップデートしてもらえると今後役立つと思います。
+
 ## サンプルプログラム
 本フレームワークを使用した電装のリポジトリ（[**FTE09ちんちろりん**](https://github.com/FROM-THE-EARTH/FTE09_chinchirorin)）
 
@@ -97,11 +100,3 @@ void Aircraft::openParachute(){
   サーボを動かす
 }
 ```
-
-## 拡張
-### AircraftWrapperの拡張
-Mbed以外のプラットフォーム向け（Arduinoなど）に拡張するには、AircraftWrapperディレクトリに各プラットフォーム用のAircraftWrapperを実装すると様々なプラットフォーム向けに拡張できると思います。
-
-その際はサードパーティ製ライブラリの更新、WrapperをArduino向けに再実装する必要があります。
-
-
