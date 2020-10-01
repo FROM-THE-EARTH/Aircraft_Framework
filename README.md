@@ -17,21 +17,22 @@
 本フレームワークを使用した電装のリポジトリ（[**FTE09ちんちろりん**](https://github.com/FROM-THE-EARTH/FTE09_chinchirorin)）
 
 ## 構成
-### Aircraft
+### Aircraft class
 
 - AircraftBase: 一般的な機体を対象にした抽象クラスです。<br>
 　電装のメインループの動作（データ取得→（準備中→発射待機→飛行中→着地後））の流れを記述しています。このクラスではこれらの具体的な動作については実装していません。
 
-- AircraftMbedBase: Mbed用にAircraftBaseクラスを継承した抽象クラスです。<br>
-　主要な実装はここでされています、データ取得書き込みの方法（どのモジュールをどのように実行するか）や、各シーケンスの動作などを記述しています。
+- AircraftWrapper: 各プラットフォーム別にAircraftBaseクラスを継承した抽象クラスです。<br>
+　主要な実装はここでされています、データ取得書き込みの方法（どのモジュールをどのように実行するか）や、各シーケンスの動作などを記述しています。<br>
+プラットフォームの切り替えはAircraftWrapper.hで行います。
 
-- Aircraft: 各種条件や動作を記述するための、AircraftMbedBaseクラスを継承したクラスです。<br>
-　AircraftMbedBaseクラスによって、機体に搭載されたモジュールが全て動作するという前提の元、個々の機体によって異なる条件（離床分離開傘）やその時の動作（分離時は点火、開傘時はサーボを動かすなど）を記述します。
+- Aircraft: 各種条件や動作を記述するための、AircraftWrapperクラスを継承したクラスです。<br>
+　個々の機体によって異なる条件（離床分離開傘）やその時の動作（分離時は点火、開傘時はサーボを動かすなど）を記述します。
 
 ### ModuleWrapper
 - ModuleWrapper: ライブラリによって異なる実装をなるべく統一した形で記述できるようにするための抽象クラスです。
 
-- ○○Wrapper: 各サードパーティ製ライブラリをラップしたクラスです。元となるライブラリと、ModuleWrapperを継承しています。
+- ○○Wrapper: 各ライブラリなどをラップしたクラスです。元となるライブラリと、ModuleWrapperを継承しています。
 
 ## 利用方法
 1. ソースコードを全てプロジェクト下に置く
@@ -100,17 +101,9 @@ void Aircraft::openParachute(){
 ```
 
 ## 拡張
-### AircraftMbedBaseの拡張
-Mbed以外のプラットフォーム向け（例えばArduino）に拡張するには、AircraftMbedBaseをAircraftArduinoBaseクラスなどにして、新たにArduino向けに実装すると様々なプラットフォーム向けに拡張できると思います。
+### AircraftWrapperの拡張
+Mbed以外のプラットフォーム向け（Arduinoなど）に拡張するには、AircraftWrapperディレクトリに各プラットフォーム用のAircraftWrapperを実装すると様々なプラットフォーム向けに拡張できると思います。
 
 その際はサードパーティ製ライブラリの更新、WrapperをArduino向けに再実装する必要があります。
-
-実装済みセンサ以外のセンサを利用したい場合はそのセンサ用のライブラリとWrapperを用意し、AircraftMbedBaseを拡張する必要があります。
-
-### AircraftBaseの拡張
-- 準備中・発射待機・飛行中・着陸　以外の状態を持つ
-- Mbed再起動・準備完了・センサーのチェック・サーボモーターを閉じる　以外のコマンドが存在する
-
-以上の機能を実装するためにはAircraftBase及びAircraftMbedBaseの拡張が必要です。
 
 
