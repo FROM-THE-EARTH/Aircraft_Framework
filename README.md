@@ -9,9 +9,19 @@
 - 開発環境: Mbed Studio
 - 使用センサ: IM920, LSM9DS1, LPS331
 
-### Todo: Arduino等
+### Arduino nano
 
-  言語仕様が違くて実装が大変そうなので挫折しました。<br>
+  センサ類の確認はしてません。コンパイルは可能。<br>
+  Arduinoで使用する際は、AircraftMbed、Module/mbed_6.2.0/ディレクトリを削除し、以下のようなディレクトリ構成にする必要があるようです。<br>
+  プロジェクト名は適当(例:denso)、densoディレクトリ下にsrcディレクトリ(必ずこの名前)を置き、その下に全部置く。
+
+  denso/<br>
+  &emsp;&emsp;├ denso.ino<br>
+  &emsp;&emsp;└ src/<br>
+  &emsp;&emsp;&emsp;&emsp;├ Aircraft/<br>
+  &emsp;&emsp;&emsp;&emsp;├ AircraftBase/<br>
+  &emsp;&emsp;&emsp;&emsp;├ ...
+  
   Arduinoに知見のある方、電装開発ついでにフレームワークの方もアップデートしてもらえると今後役立つと思います。
 
 ## サンプルプログラム
@@ -46,7 +56,7 @@
 搭載しているモジュールが異なる場合は必要に応じて書き換えて下さい。
 
 ```C++
-/* main.cpp */ 
+/* Mbed */ 
 #include "Aircraft.h"
 
 constexpr float launchThreshold = 2.5f;    // G
@@ -63,6 +73,20 @@ int main() {
 
   aircraft.begin();
 }
+
+/* Arduino */
+#include "src/Aircraft/Aircraft.h"
+
+Aircraft aircraft(0, 0);
+
+void setup() {
+  aircraft.initialize();
+}
+
+void loop() {
+  aircraft.begin();
+}
+
 ```
 
 

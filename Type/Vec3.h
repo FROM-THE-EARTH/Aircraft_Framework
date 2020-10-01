@@ -1,7 +1,8 @@
 #pragma once
 
-#include <cmath>
-#include <string>
+#include "../PlatformDefinition.h"
+#include "../Utils/Utils.h"
+#include "../Type/XString.h"
 
 struct Vec3
 {
@@ -19,14 +20,14 @@ struct Vec3
 
   /*========================method=============================*/
 
-  std::string toString() const
+  xString toString() const
   {
-    return std::string("(" + std::to_string(x) + "," + std::to_string(y) + "," + std::to_string(z) + ")");
+    return xString("(" + to_XString(x) + "," + to_XString(y) + "," + to_XString(z) + ")");
   }
 
   float length() const
   {
-    return std::sqrt(x * x + y * y + z * z);
+    return Utils::Math::sqrt(x * x + y * y + z * z);
   }
 
   Vec3 normalized() const

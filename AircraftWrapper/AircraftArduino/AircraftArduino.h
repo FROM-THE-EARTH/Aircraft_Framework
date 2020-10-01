@@ -1,8 +1,6 @@
-/*
-Todo: Create framework for Arduino
-*/
+#pragma once
 
-#include "AircraftBase.h"
+#include "../../AircraftBase/AircraftBase.h"
 
 class AircraftWrapper : public AircraftBase
 {

@@ -1,14 +1,14 @@
 #pragma once
-#include <string>
+#include "../Type/XString.h"
 
 class ModuleWrapper
 {
-  const std::string name_;
+  const xString name_;
 
 protected:
   bool available = false;
 
-  ModuleWrapper(const std::string &name)
+  ModuleWrapper(const xString &name)
       : name_(name)
   {
   }
@@ -18,12 +18,12 @@ protected:
   virtual bool isAvailable() = 0;
 
 public:
-  std::string name() const
+  xString name() const
   {
     return name_;
   }
 
-  std::string status()
+  xString status()
   {
     return name() + ": " + (isAvailable() ? "OK" : "NG");
   }

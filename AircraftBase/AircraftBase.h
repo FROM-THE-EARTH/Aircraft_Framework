@@ -1,6 +1,8 @@
-#include "Datas.h"
-#include "MadgwickAHRS.h"
-#include <string>
+#pragma once
+
+#include "../Filter/MadgwickAHRS.h"
+#include "../Type/Datas.h"
+#include "../Type/XString.h"
 
 class AircraftBase
 {
@@ -75,7 +77,7 @@ protected:
   virtual void onReceive() = 0;
 
   // check received command
-  Commands checkCommand(const std::string &recv);
+  Commands checkCommand(const xString& recv);
 
   // start recording datas
   void beginRecord() { recording_ = true; }

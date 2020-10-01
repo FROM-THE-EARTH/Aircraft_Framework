@@ -4,10 +4,10 @@ This program is developed under the mbed-os 6.2.0
 
 #include "AircraftBase.h"
 
-#include "IM920Wrapper.h"
-#include "LPSWrapper.h"
-#include "LSMWrapper.h"
-#include "TimerWrapper.h"
+#include "../../Module/mbed_6.2.0/IM920Wrapper/IM920Wrapper.h"
+#include "../../Module/mbed_6.2.0/LPSWrapper/LPSWrapper.h"
+#include "../../Module/mbed_6.2.0/LSMWrapper/LSMWrapper.h"
+#include "../../Module/mbed_6.2.0/TimerWrapper/TimerWrapper.h"
 #include "mbed.h"
 
 class AircraftWrapper : public AircraftBase
