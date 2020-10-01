@@ -1,5 +1,5 @@
 #include "AircraftBase.h"
-#include "Utils.h"
+#include "../Utils/Utils.h"
 
 void AircraftBase::begin()
 {
@@ -40,7 +40,7 @@ void AircraftBase::begin()
   }
 }
 
-AircraftBase::Commands AircraftBase::checkCommand(const std::string &recv)
+AircraftBase::Commands AircraftBase::checkCommand(const xString &recv)
 {
   if (recv == "reset")
   {

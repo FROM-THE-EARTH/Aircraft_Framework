@@ -1,4 +1,6 @@
-#include "AircraftWrapper.h"
+#pragma once
+
+#include "../AircraftWrapper/AircraftWrapper.h"
 
 class Aircraft : public AircraftWrapper
 {

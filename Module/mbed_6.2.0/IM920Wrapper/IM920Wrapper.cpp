@@ -1,7 +1,7 @@
 #include "IM920Wrapper.h"
 
-void IM920Wrapper::transmit(const std::string &str) {
-  const std::string s = name() + "->" + str;
+void IM920Wrapper::transmit(const xString &str) {
+  const xString s = name() + "->" + str;
 
   if (sendToSerial_) {
     printf("[Debug]");
@@ -20,13 +20,13 @@ void IM920Wrapper::transmit(const std::string &str) {
   }
 }
 
-std::string IM920Wrapper::receive() {
+xString IM920Wrapper::receive() {
   char buf[257];
 
   const int i = IM920::recv(buf, 256);
   buf[i] = 0;
 
-  const std::string str = buf;
+  const xString str = buf;
 
   if (sendToSerial_) {
     printf("[Debug]");

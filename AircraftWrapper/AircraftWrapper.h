@@ -1,5 +1,4 @@
-//#define PLATFORM_MBED
-//#define PLATFORM_ARDUINO
+#include "../PlatformDefinition.h"
 
 #ifdef PLATFORM_MBED
 #include "AircraftMbed/AircraftMbed.h"

@@ -1,4 +1,4 @@
-#include "AircraftWrapper.h"
+#include "../AircraftWrapper.h"
 
 #ifdef PLATFORM_MBED
 
@@ -71,7 +71,7 @@ bool AircraftWrapper::isReady(bool showDetail)
     transmitter_.transmit(lps_.status());
     transmitter_.transmit(lsm_.status());
   }
-  transmitter_.transmit("Modules: " + std::string(allModulesAvailable ? "OK" : "NG"));
+  transmitter_.transmit("Modules: " + ::xString(allModulesAvailable ? "OK" : "NG"));
 
   return allModulesAvailable;
 }
@@ -151,7 +151,7 @@ void AircraftWrapper::getDatas()
 
 void AircraftWrapper::writeDatas()
 {
-  transmitter_.transmit("("+std::to_string(datas.roll)+", "+std::to_string(datas.pitch)+", "+std::to_string(datas.yaw)+")");
+  transmitter_.transmit("("+to_XString(datas.roll)+", "+to_XString(datas.pitch)+", "+to_XString(datas.yaw)+")");
 }
 
 void AircraftWrapper::onReceive()

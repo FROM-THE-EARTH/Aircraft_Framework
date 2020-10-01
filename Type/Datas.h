@@ -2,7 +2,6 @@
 
 #include "Vec3.h"
 
-
 struct Datas
 {
   //Current values

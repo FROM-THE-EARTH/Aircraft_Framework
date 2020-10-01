@@ -1,9 +1,9 @@
-#include "AircraftWrapper.h"
+#include "../AircraftWrapper.h"
 
 #ifdef PLATFORM_ARDUINO
 
-#include "Utils.h"
-#include "Nature.h"
+#include "../../Utils/Utils.h"
+#include "../../Constants/Nature.h"
 
 bool AircraftWrapper::initialize()
 {
