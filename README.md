@@ -46,8 +46,8 @@
 /* main.cpp */ 
 #include "Aircraft.h"
 
-constexpr float launchThreshold = 2.5;    // G
-constexpr float landingTime = 140 * 1000; // ms
+constexpr float launchThreshold = 2.5f;    // G
+constexpr float landingTime = 140.0f;      // s
 
 Aircraft aircraft(launchThreshold, landingTime);
 
