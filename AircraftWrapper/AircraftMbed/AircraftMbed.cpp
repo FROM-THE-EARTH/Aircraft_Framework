@@ -81,49 +81,6 @@ void AircraftWrapper::end()
   // end processing
 }
 
-void AircraftWrapper::waiting()
-{
-  beginRecord();
-}
-
-void AircraftWrapper::waitingLaunch()
-{
-  if (launchCondition())
-  {
-    datas.launchTime = datas.time;
-    beginRecord();
-    sequence = Sequence::InFlight;
-  }
-}
-
-void AircraftWrapper::inFlight()
-{
-  if (detachCondition())
-  {
-    datas.detachTime = datas.time;
-    detachAircraft();
-  }
-
-  if (decelerationCondition())
-  {
-    datas.decelerationTime = datas.time;
-    openParachute();
-  }
-
-  if (landingCondition())
-  {
-    datas.landingTime = datas.time;
-    endRecord();
-    sequence = Sequence::Landing;
-  }
-}
-
-void AircraftWrapper::landing()
-{
-  // if(gps.isAvailable)
-  // transmit gps info
-}
-
 void AircraftWrapper::getDatas()
 {
   lsm_.readAccel();
@@ -151,33 +108,9 @@ void AircraftWrapper::getDatas()
 
 void AircraftWrapper::writeDatas()
 {
+  //sd.write()
   transmitter_.transmit("(" + to_XString(datas.roll) + ", " + to_XString(datas.pitch) + ", " + to_XString(datas.yaw) + ")");
-}
-
-void AircraftWrapper::onReceive()
-{
-  switch (checkCommand(receiver_.receive()))
-  {
-  case Commands::Reboot:
-    reboot();
-    break;
-
-  case Commands::EscapePreparing:
-    sequence = Sequence::ReadyToLaunch;
-    break;
-
-  case Commands::CheckSensors:
-    isReady(true);
-    break;
-
-  case Commands::ClosingServo:
-    // Close servo
-    break;
-
-  case Commands::None:
-    transmitter_.transmit("Invalid command");
-    break;
-  }
+  transmitter_.transmit(to_XString(datas.pressure)+", "+to_XString(datas.temperature));
 }
 
 #endif
