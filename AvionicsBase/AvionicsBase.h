@@ -50,7 +50,6 @@ class AvionicsBase
 
 protected:
   Datas datas;
-  const bool hasFlightPin;
 
 public:
   // main loop
@@ -65,9 +64,6 @@ public:
   // return datas
   const Datas &data() const { return datas; }
 
-  // is flight pin attached
-  virtual bool flightpin() = 0;
-
   // conditions
   bool (*Condition_Launch)();
   bool (*Condition_Detach)() = Function::Condition::None;
@@ -79,9 +75,8 @@ public:
   void (*Operation_OpenParachute)();
 
 protected:
-  AvionicsBase(bool hasFlightPin, bool imuFilter, bool useMagnInMadgwick)
-      : hasFlightPin(hasFlightPin),
-        imuFilter_(imuFilter),
+  AvionicsBase(bool imuFilter, bool useMagnInMadgwick)
+      : imuFilter_(imuFilter),
         useMagnInMadgwick_(useMagnInMadgwick)
   {
   }

@@ -53,9 +53,6 @@ bool Avionics::initialize()
 
 void Avionics::update()
 {
-  if(isElapsed(1.0f)){
-    transmitter_.transmit("FlightPin: " + xString(flightPin_ ? "Attached" : "Detached"));
-  }
   receiver_.poll();
 
   timer_.update();
@@ -80,7 +77,6 @@ bool Avionics::isReady(bool showDetail)
     transmitter_.transmit(receiver_.status());
     transmitter_.transmit(lps_.status());
     transmitter_.transmit(lsm_.status());
-    transmitter_.transmit("FlightPin: " + xString(flightPin_ ? "Attached" : "Detached"));
   }
   transmitter_.transmit("Modules: " + xString(allModulesAvailable ? "OK" : "NG"));
 
