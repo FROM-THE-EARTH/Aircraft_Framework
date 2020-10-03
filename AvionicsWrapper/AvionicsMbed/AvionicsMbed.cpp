@@ -1,11 +1,11 @@
-#include "../Aircraft.h"
+#include "../Avionics.h"
 
 #ifdef PLATFORM_MBED
 
 #include "Utils.h"
 #include "Nature.h"
 
-bool Aircraft::initialize()
+bool Avionics::initialize()
 {
   // IM920
   transmitter_.initialize();
@@ -14,7 +14,7 @@ bool Aircraft::initialize()
   receiver_.initialize();
   if (receiver_.isAvailable())
   {
-    receiver_.attach(this, &Aircraft::onReceive);
+    receiver_.attach(this, &Avionics::onReceive);
   }
 
   // LSM9DS1
@@ -51,7 +51,7 @@ bool Aircraft::initialize()
   return isReady();
 }
 
-void Aircraft::update()
+void Avionics::update()
 {
   receiver_.poll();
   
@@ -62,7 +62,7 @@ void Aircraft::update()
   datas.deltaTime = timer_.delta();
 }
 
-bool Aircraft::isReady(bool showDetail)
+bool Avionics::isReady(bool showDetail)
 {
   bool allModulesAvailable = true;
 
@@ -83,12 +83,12 @@ bool Aircraft::isReady(bool showDetail)
   return allModulesAvailable;
 }
 
-void Aircraft::end()
+void Avionics::end()
 {
   // end processing
 }
 
-void Aircraft::getDatas()
+void Avionics::getDatas()
 {
   lsm_.readAccel();
   lsm_.readGyro();
@@ -113,7 +113,7 @@ void Aircraft::getDatas()
   // datas.latitude;
 }
 
-void Aircraft::writeDatas()
+void Avionics::writeDatas()
 {
   //sd.write()
   transmitter_.transmit("(" + to_XString(datas.roll) + ", " + to_XString(datas.pitch) + ", " + to_XString(datas.yaw) + ")");

@@ -1,12 +1,12 @@
 #pragma once
 
-#include "../../AircraftBase/AircraftBase.h"
+#include "../../AvionicsBase/AvionicsBase.h"
 
-class Aircraft : public AircraftBase
+class Avionics : public AvionicsBase
 {
 public:
-  Aircraft()
-      : AircraftBase()
+  Avionics()
+      : AvionicsBase()
   {
   }
 

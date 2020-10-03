@@ -1,53 +1,33 @@
-#include "../AircraftWrapper.h"
+#include "../Aircraft.h"
 
 #ifdef PLATFORM_ARDUINO
 
 #include "../../Utils/Utils.h"
 #include "../../Constants/Nature.h"
 
-bool AircraftWrapper::initialize()
+bool Aircraft::initialize()
 {
   return isReady();
 }
 
-void AircraftWrapper::update()
+void Aircraft::update()
 {
 }
 
-bool AircraftWrapper::isReady(bool showDetail)
+bool Aircraft::isReady(bool showDetail)
 {
   return false;
 }
 
-void AircraftWrapper::end()
+void Aircraft::end()
 {
 }
 
-void AircraftWrapper::waiting()
+void Aircraft::getDatas()
 {
 }
 
-void AircraftWrapper::waitingLaunch()
-{
-}
-
-void AircraftWrapper::inFlight()
-{
-}
-
-void AircraftWrapper::landing()
-{
-}
-
-void AircraftWrapper::getDatas()
-{
-}
-
-void AircraftWrapper::writeDatas()
-{
-}
-
-void AircraftWrapper::onReceive()
+void Aircraft::writeDatas()
 {
 }
 

@@ -2,7 +2,7 @@
 This program is developed under the mbed-os 6.2.0
 */
 
-#include "AircraftBase.h"
+#include "AvionicsBase.h"
 
 #include "../../Module/mbed_6.2.0/IM920Wrapper/IM920Wrapper.h"
 #include "../../Module/mbed_6.2.0/LPSWrapper/LPSWrapper.h"
@@ -10,7 +10,7 @@ This program is developed under the mbed-os 6.2.0
 #include "../../Module/mbed_6.2.0/TimerWrapper/TimerWrapper.h"
 #include "mbed.h"
 
-class Aircraft : public AircraftBase
+class Avionics : public AvionicsBase
 {
 protected:
   TimerWrapper timer_;
@@ -25,8 +25,8 @@ protected:
   //PwmOut servo_1(p21), servo_2(p22), servo_3(p23);
 
 public:
-  Aircraft()
-      : AircraftBase(),
+  Avionics()
+      : AvionicsBase(),
         receiver_("Receiver_A", p28, p27, p29, p30),
         transmitter_("Sender_A", p28, p27, p29, p30),
         lps_("LPS331_A", p9, p10, LPS331_I2C_SA0_HIGH),

@@ -13,7 +13,7 @@
 // 29/09/2011	SOH Madgwick    Initial release
 // 02/10/2011	SOH Madgwick	Optimised for reduced CPU load
 // 19/02/2012	SOH Madgwick	Magnetometer measurement is normalised
-// 09/28/2020	Ekyu Kondo	    Changed for my code
+// 28/09/2020	Ekyu Kondo	    Changed for my code
 //
 //=============================================================================================
 

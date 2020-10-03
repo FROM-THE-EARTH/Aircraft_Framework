@@ -1,7 +1,7 @@
-#include "AircraftBase.h"
+#include "AvionicsBase.h"
 #include "../Utils/Utils.h"
 
-void AircraftBase::begin()
+void AvionicsBase::begin()
 {
   if (!checkFunctions())
   {
@@ -47,7 +47,7 @@ void AircraftBase::begin()
   }
 }
 
-bool AircraftBase::checkFunctions()
+bool AvionicsBase::checkFunctions()
 {
   bool ok = true;
 
@@ -61,7 +61,7 @@ bool AircraftBase::checkFunctions()
   return ok;
 }
 
-void AircraftBase::waiting()
+void AvionicsBase::waiting()
 {
   if (isElapsed(5.0f))
   {
@@ -70,7 +70,7 @@ void AircraftBase::waiting()
   //beginRecord();
 }
 
-void AircraftBase::waitingLaunch()
+void AvionicsBase::waitingLaunch()
 {
   if (isElapsed(5.0f))
   {
@@ -85,7 +85,7 @@ void AircraftBase::waitingLaunch()
   }
 }
 
-void AircraftBase::inFlight()
+void AvionicsBase::inFlight()
 {
   if (isElapsed(5.0f))
   {
@@ -116,7 +116,7 @@ void AircraftBase::inFlight()
   }
 }
 
-void AircraftBase::landing()
+void AvionicsBase::landing()
 {
   // transmit gps info
   if (isElapsed(5.0f))
@@ -125,7 +125,7 @@ void AircraftBase::landing()
   }
 }
 
-AircraftBase::Commands AircraftBase::checkCommand(const xString &recv)
+AvionicsBase::Commands AvionicsBase::checkCommand(const xString &recv)
 {
   if (recv == "reboot")
   {
@@ -146,7 +146,7 @@ AircraftBase::Commands AircraftBase::checkCommand(const xString &recv)
   return Commands::None;
 }
 
-void AircraftBase::onReceiveCommand()
+void AvionicsBase::onReceiveCommand()
 {
   switch (checkCommand(receive()))
   {
@@ -173,7 +173,7 @@ void AircraftBase::onReceiveCommand()
   }
 }
 
-void AircraftBase::applyIMUFilter()
+void AvionicsBase::applyIMUFilter()
 {
   if (useMagnInMadgwick_)
   {

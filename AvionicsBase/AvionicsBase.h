@@ -16,7 +16,7 @@ namespace Function
   } // namespace Operation
 } // namespace Function
 
-class AircraftBase
+class AvionicsBase
 {
   enum class Sequence
   {
@@ -80,12 +80,12 @@ public:
   void (*Operation_OpenParachute)();
 
 protected:
-  AircraftBase()
+  AvionicsBase()
   {
   }
 
   //--------------------------------------
-  // Defines in Aircraft(Platform) class
+  // Defines in Avionics(Platform) class
   //--------------------------------------
   // time step etc...
   virtual void update() = 0;

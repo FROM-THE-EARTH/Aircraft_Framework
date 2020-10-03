@@ -12,7 +12,7 @@
 // Date			Author          Notes
 // 29/09/2011	SOH Madgwick    Initial release
 // 02/10/2011	SOH Madgwick	Optimised for reduced CPU load
-// 09/28/2020	Ekyu Kondo	    Changed for my code
+// 28/09/2020	Ekyu Kondo	    Changed for my code
 //
 //=============================================================================================
 #ifndef MadgwickAHRS_h
@@ -43,12 +43,12 @@ public:
     Madgwick(void);
     //void begin(float sampleFrequency) { invSampleFreq = 1.0f / sampleFrequency; }
 
-    void update(Vec3 accel, Vec3 gyro, float dt)
+    void update(const Vec3& accel, const Vec3& gyro, float dt)
     {
         updateIMU(gyro.x, gyro.y, gyro.z, accel.x, accel.y, accel.z, dt);
     }
 
-    void update(Vec3 accel, Vec3 gyro, Vec3 magn, float dt)
+    void update(const Vec3& accel, const Vec3& gyro, const Vec3& magn, float dt)
     {
         update(gyro.x, gyro.y, gyro.z, accel.x, accel.y, accel.z, magn.x, magn.y, magn.z, dt);
     }

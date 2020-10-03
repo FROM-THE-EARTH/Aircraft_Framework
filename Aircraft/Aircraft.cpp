@@ -1,8 +1,7 @@
 #include "Aircraft.h"
 
 Aircraft::Aircraft(float launchThreshold, float landingTime)
-    : 
-      launchThreshold_(launchThreshold),
+    : launchThreshold_(launchThreshold),
       landingTime_(landingTime),
       AircraftWrapper()
 {
@@ -20,12 +19,12 @@ bool Aircraft::detachCondition()
 
 bool Aircraft::decelerationCondition()
 {
-  return (datas.altitude < datas.maxAltitude - 10);
+  return (datas.altitude < (datas.maxAltitude - 10));
 }
 
 bool Aircraft::landingCondition()
 {
-  return  (datas.launchTime-datas.time) > landingTime_;
+  return (datas.time - datas.launchTime) > landingTime_;
 }
 
 void Aircraft::detachAircraft()
