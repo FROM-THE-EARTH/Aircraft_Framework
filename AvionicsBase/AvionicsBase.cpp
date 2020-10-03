@@ -5,7 +5,7 @@ void AvionicsBase::begin()
 {
   if (!checkFunctions())
   {
-    transmit("[WARNING] Some function is not defined");
+    transmit("[WARNING] Some function is undefined");
     transmit("[WARNING] Processing will be stopped");
     return;
   }

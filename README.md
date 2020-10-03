@@ -1,25 +1,27 @@
-# Aircraft_Framework
+# Avionics
 ハイブリッドロケット電装の開発を容易にするためのフレームワークです。
 
-分離条件、パラシュート開傘条件を記述するだけで一般的な電装を実装可能になっています。
+条件、動作を記述するだけで一般的な電装を実装可能になっています。（少なくとも9期代で作成した電装に関しては出来るような設計です）
+
+一部センサがまだ使えません（11月までにはします）
 
 ## 動作環境（確認済み）
 ### Mbed LPC1768
 - OS: Mbed OS 6.2.0
 - 開発環境: Mbed Studio
-- 使用センサ: IM920, LSM9DS1, LPS331
+- 使用センサ型番: IM920, LSM9DS1, MM-TXS03, ADXL03, GYSFDMAXB
 
 ### Arduino nano
 
-  センサ類の確認はしてません。コンパイルは可能。<br>
-  Arduinoで使用する際は、AircraftMbed、Module/mbed_6.2.0/ディレクトリを削除し、以下のようなディレクトリ構成にする必要があるようです。<br>
+  センサ類の確認はしてません。書き込みは可能。<br>
+  以下のようなディレクトリ構成にしないと読み込んでくれないらしいです。<br>
   プロジェクト名は適当(例:denso)、densoディレクトリ下にsrcディレクトリ(必ずこの名前)を置き、その下に全部置く。
 
   denso/<br>
   &emsp;&emsp;├ denso.ino<br>
   &emsp;&emsp;└ src/<br>
-  &emsp;&emsp;&emsp;&emsp;├ Aircraft/<br>
-  &emsp;&emsp;&emsp;&emsp;├ AircraftBase/<br>
+  &emsp;&emsp;&emsp;&emsp;├ Avionics/<br>
+  &emsp;&emsp;&emsp;&emsp;├ AvionicsBase/<br>
   &emsp;&emsp;&emsp;&emsp;├ ...
   
   Arduinoに知見のある方、電装開発ついでにフレームワークの方もアップデートしてもらえると今後役立つと思います。
@@ -28,17 +30,14 @@
 本フレームワークを使用した電装のリポジトリ（[**FTE09ちんちろりん**](https://github.com/FROM-THE-EARTH/FTE09_chinchirorin)）
 
 ## 構成
-### Aircraft class
+### Avionics class
 
-- AircraftBase: 一般的な機体を対象にした抽象クラスです。<br>
-　電装のメインループの動作（データ取得→（準備中→発射待機→飛行中→着地後））の流れを記述しています。このクラスではこれらの具体的な動作については実装していません。
+- AvionicsBase: 一般的な機体を対象にした抽象クラスです。<br>
+　プラットフォームに依存しない部分の動作を定義しています。<br>
+  一部プラットフォーム依存の関数を仮想関数としてAvionicsクラスで実装するようにしています。
 
-- AircraftWrapper: 各プラットフォーム別にAircraftBaseクラスを継承した抽象クラスです。<br>
-　主要な実装はここでされています、データ取得書き込みの方法（どのモジュールをどのように実行するか）や、各シーケンスの動作などを記述しています。<br>
-プラットフォームの切り替えはAircraftWrapper.hで行います。
-
-- Aircraft: 各種条件や動作を記述するための、AircraftWrapperクラスを継承したクラスです。<br>
-　個々の機体によって異なる条件（離床分離開傘）やその時の動作（分離時は点火、開傘時はサーボを動かすなど）を記述します。
+- Avionics: 各プラットフォーム用にAvionicsBaseクラスを継承したクラスです。<br>
+  タイマーやセンサ類の初期化、読み書きなどプラットフォーム依存の動作を記述しています。
 
 ### ModuleWrapper class
 - ModuleWrapper: ライブラリによって異なる実装をなるべく統一した形で記述できるようにするための抽象クラスです。
@@ -47,8 +46,8 @@
 
 ## 利用方法
 1. ソースコードを全てプロジェクト下に置く
-2. main.cppにAircraft.hをincludeして以下のようなコードを記述する（適宜pinや名前は変える）
-3. PlatformDefinition.hで、使用するプラットフォームに応じて#defineを編集する。
+2. PlatformDefinition.hで、使用するプラットフォームに応じて#defineを編集する。
+3. 以下のようなコードを記述する
 4. 製作するロケットに応じて分離条件、開傘条件を以下のように記述する。
 5. ビルドする
 
@@ -58,70 +57,68 @@
 
 ```C++
 /* Mbed */ 
-#include "Aircraft.h"
+#include "Avionics.h"
 
-constexpr float launchThreshold = 2.5f;    // G
-constexpr float landingTime = 140.0f;      // s
+//コンストラクタ(IMUフィルタ有無 = true, フィルタに地磁気を用いるか = false)
+Avionics avionics;
 
-Aircraft aircraft(launchThreshold, landingTime);
+DigitalIn flightpin(p12);
+
+static void defineFunctions();
 
 int main() {
-  printf("Hello Mbed\r\n");
+  defineFunctions();
 
-  aircraft.setDebugMode(true);
+  avionics.setDebugMode(true);
 
-  aircraft.initialize();
+  avionics.initialize();
 
-  aircraft.begin();
+  avionics.begin();
 }
+```
 
+```C++
 /* Arduino */
-#include "src/Aircraft/Aircraft.h"
+#include "src/Avionics/Avionics.h"
 
-Aircraft aircraft(0, 0);
+Avionics avionics;
+
+static void defineFunctions();
 
 void setup() {
-  aircraft.initialize();
+  defineFunctions();
+
+  avionics.initialize();
 }
 
 void loop() {
-  aircraft.begin();
+  avionics.begin();
 }
-
 ```
 
-
 ```C++
-/* Aircraft.cpp */
-#include "Aircraft.h"
+/* 各種条件や動作の定義例 */
+/* Detach以外は定義しないとnullptrなのでエラー吐きます */
+static void defineFunctions(){
 
-//離床条件
-bool Aircraft::launchCondition(){
-  return 加速度 > 2.5G;
-}
+  avionics.Condition_Launch = []() {
+    return !flightpin && (avionics.data().accel.length() > 2.5);
+  };
 
-//分離条件
-bool Aircraft::detachCondition() {
-  return (経過時間 - 離床時間) > 8.0s;
-}
+  avionics.Condition_Detach = Function::Condition::None;
+  //デフォルトでFunction::Condition::Noneとしているので必要ない場合は書く必要はない
 
-//減速機構作動条件
-bool Aircraft::decelerationCondition() {
-  return 高度 < (最高高度 - 10m);
-}
+  avionics.Condition_Deceleration =[](){
+    return avionics.data().altitude < (avionics.data().maxAltitude - 10.0f);
+  };
 
-//着地判定条件
-bool Aircraft::landingCondition(){
-  return (経過時間 - 開傘時間) > 120.0s;
-}
+  avionics.Condition_Landing = []() {
+    return (avionics.data().time - avionics.data().bootTime) > 140.0f;
+  };
 
-//分離時の動作
-void Aircraft::detachAircraft(){
-  点火電装に信号を送信
-}
+  avionics.Operation_Detach = Function::Operation::None;
+  //デフォルトでFunction::Operation::Noneとしているので必要ない場合は書く必要はない
 
-//パラシュート開傘時の動作
-void Aircraft::openParachute(){
-  サーボを動かす
+  avionics.Operation_OpenParachute = サーボ動かす関数;
 }
 ```
