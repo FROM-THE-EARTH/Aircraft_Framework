@@ -5,8 +5,8 @@
 class Avionics : public AvionicsBase
 {
 public:
-  Avionics()
-      : AvionicsBase()
+  Avionics(bool hasFlightPin, bool imuFilter = true, bool useMagnInMadgwick = false)
+      : AvionicsBase(hasFlightPin, imuFilter, useMagnInMadgwick)
   {
   }
 
@@ -14,6 +14,11 @@ public:
 
   virtual void setDebugMode(bool mode) override
   {
+  }
+
+  virtual bool flightpin() override
+  {
+    return hasFlightPin;
   }
 
 private:

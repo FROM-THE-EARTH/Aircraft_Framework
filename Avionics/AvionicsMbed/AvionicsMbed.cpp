@@ -53,8 +53,11 @@ bool Avionics::initialize()
 
 void Avionics::update()
 {
+  if(isElapsed(1.0f)){
+    transmitter_.transmit("FlightPin: " + xString(flightPin_ ? "Attached" : "Detached"));
+  }
   receiver_.poll();
-  
+
   timer_.update();
 
   datas.time = timer_.now();
@@ -77,8 +80,9 @@ bool Avionics::isReady(bool showDetail)
     transmitter_.transmit(receiver_.status());
     transmitter_.transmit(lps_.status());
     transmitter_.transmit(lsm_.status());
+    transmitter_.transmit("FlightPin: " + xString(flightPin_ ? "Attached" : "Detached"));
   }
-  transmitter_.transmit("Modules: " + ::xString(allModulesAvailable ? "OK" : "NG"));
+  transmitter_.transmit("Modules: " + xString(allModulesAvailable ? "OK" : "NG"));
 
   return allModulesAvailable;
 }
@@ -117,7 +121,7 @@ void Avionics::writeDatas()
 {
   //sd.write()
   transmitter_.transmit("(" + to_XString(datas.roll) + ", " + to_XString(datas.pitch) + ", " + to_XString(datas.yaw) + ")");
-  transmitter_.transmit(to_XString(datas.pressure)+", "+to_XString(datas.temperature));
+  transmitter_.transmit(to_XString(datas.pressure) + ", " + to_XString(datas.temperature));
 }
 
 #endif

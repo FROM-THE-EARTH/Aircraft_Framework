@@ -39,9 +39,10 @@ class AvionicsBase
 
   float preTime_ = 0.0f;
 
+  const bool imuFilter_;
+  const bool useMagnInMadgwick_;
+
   bool recording_ = false;
-  bool imuFilter_ = true;
-  bool useMagnInMadgwick_ = false;
 
   bool detached_ = false, decelerationStarted_ = false;
 
@@ -49,6 +50,7 @@ class AvionicsBase
 
 protected:
   Datas datas;
+  const bool hasFlightPin;
 
 public:
   // main loop
@@ -60,14 +62,11 @@ public:
   // whether to show debug
   virtual void setDebugMode(bool mode) = 0;
 
-  // madgwick filter
-  void setIMUFilter(bool use) { imuFilter_ = use; }
-
-  // whether to use magn param in madgwick filter
-  void useMagn(bool use) { useMagnInMadgwick_ = use; }
-
   // return datas
   const Datas &data() const { return datas; }
+
+  // is flight pin attached
+  virtual bool flightpin() = 0;
 
   // conditions
   bool (*Condition_Launch)();
@@ -80,7 +79,10 @@ public:
   void (*Operation_OpenParachute)();
 
 protected:
-  AvionicsBase()
+  AvionicsBase(bool hasFlightPin, bool imuFilter, bool useMagnInMadgwick)
+      : hasFlightPin(hasFlightPin),
+        imuFilter_(imuFilter),
+        useMagnInMadgwick_(useMagnInMadgwick)
   {
   }
 
