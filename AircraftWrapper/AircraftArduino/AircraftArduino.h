@@ -2,15 +2,14 @@
 
 #include "../../AircraftBase/AircraftBase.h"
 
-class AircraftWrapper : public AircraftBase
+class Aircraft : public AircraftBase
 {
-protected:
-  AircraftWrapper()
+public:
+  Aircraft()
       : AircraftBase()
   {
   }
 
-public:
   virtual bool initialize() override;
 
   virtual void setDebugMode(bool mode) override

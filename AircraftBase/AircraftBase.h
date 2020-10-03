@@ -4,6 +4,18 @@
 #include "../Type/Datas.h"
 #include "../Type/XString.h"
 
+namespace Function
+{
+  namespace Condition
+  {
+    static bool None() { return false; }
+  } // namespace Condition
+  namespace Operation
+  {
+    static void None() {}
+  } // namespace Operation
+} // namespace Function
+
 class AircraftBase
 {
   enum class Sequence
@@ -23,16 +35,17 @@ class AircraftBase
     ClosingServo
   };
 
-  Madgwick madgwick;
+  Madgwick madgwick_;
 
   float preTime_ = 0.0f;
 
   bool recording_ = false;
   bool imuFilter_ = true;
+  bool useMagnInMadgwick_ = false;
 
   bool detached_ = false, decelerationStarted_ = false;
 
-  Sequence sequence = Sequence::ReadyToLaunch;
+  Sequence sequence_ = Sequence::ReadyToLaunch;
 
 protected:
   Datas datas;
@@ -46,6 +59,25 @@ public:
 
   // whether to show debug
   virtual void setDebugMode(bool mode) = 0;
+
+  // madgwick filter
+  void setIMUFilter(bool use) { imuFilter_ = use; }
+
+  // whether to use magn param in madgwick filter
+  void useMagn(bool use) { useMagnInMadgwick_ = use; }
+
+  // return datas
+  const Datas &data() const { return datas; }
+
+  // conditions
+  bool (*Condition_Launch)();
+  bool (*Condition_Detach)() = Function::Condition::None;
+  bool (*Condition_Deceleration)();
+  bool (*Condition_Landing)();
+
+  // operations
+  void (*Operation_Detach)() = Function::Operation::None;
+  void (*Operation_OpenParachute)();
 
 protected:
   AircraftBase()
@@ -80,27 +112,6 @@ protected:
   virtual xString receive() = 0;
 
   //--------------------------------------
-  // Defines in Aircraft class
-  //--------------------------------------
-  // set launch condition
-  virtual bool launchCondition() = 0;
-
-  // set detaching condition
-  virtual bool detachCondition() = 0;
-
-  // set opening parachute condition
-  virtual bool decelerationCondition() = 0;
-
-  // set landing condition
-  virtual bool landingCondition() = 0;
-
-  // detaching operation
-  virtual void detachAircraft() = 0;
-
-  // opening parachute operation
-  virtual void openParachute() = 0;
-
-  //--------------------------------------
   // Defines in this class
   //--------------------------------------
   // start recording datas
@@ -108,9 +119,6 @@ protected:
 
   // end recording datas
   void endRecord() { recording_ = false; }
-
-  // madgwick filter
-  void setIMUFilter(bool on) { imuFilter_ = on; }
 
   // on receive command
   void onReceiveCommand();
@@ -126,6 +134,8 @@ protected:
   }
 
 private:
+  bool checkFunctions();
+
   // wait for preparing
   void waiting();
 

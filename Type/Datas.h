@@ -8,8 +8,10 @@ struct Datas
   float time, deltaTime;     //[s]
   float temperature;         //[C]
   float pressure;            //[Pa]
-  Vec3 accel, gyro, magn;    //[G, dps, gauss]
-  float latitude, longitude; //[degree, degree]
+  Vec3 accel;                //[G]
+  Vec3 gyro;                 //[dps]
+  Vec3 magn;                 //[gauss]
+  float latitude, longitude; //[degree]
   float altitude;            //[m]
   float roll, pitch, yaw;    //[degree]
 

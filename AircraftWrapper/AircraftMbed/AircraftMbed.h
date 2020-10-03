@@ -10,7 +10,7 @@ This program is developed under the mbed-os 6.2.0
 #include "../../Module/mbed_6.2.0/TimerWrapper/TimerWrapper.h"
 #include "mbed.h"
 
-class AircraftWrapper : public AircraftBase
+class Aircraft : public AircraftBase
 {
 protected:
   TimerWrapper timer_;
@@ -24,7 +24,8 @@ protected:
   //DigitalIn flightPin(p12);
   //PwmOut servo_1(p21), servo_2(p22), servo_3(p23);
 
-  AircraftWrapper()
+public:
+  Aircraft()
       : AircraftBase(),
         receiver_("Receiver_A", p28, p27, p29, p30),
         transmitter_("Sender_A", p28, p27, p29, p30),
@@ -33,7 +34,6 @@ protected:
   {
   }
 
-public:
   virtual bool initialize() override;
 
   virtual void setDebugMode(bool mode) override
@@ -58,15 +58,18 @@ private:
 
   virtual void writeDatas() override;
 
-  virtual void transmit(const xString& str) override{
+  virtual void transmit(const xString &str) override
+  {
     transmitter_.transmit(str);
   };
 
-  virtual xString receive() override{
+  virtual xString receive() override
+  {
     return receiver_.receive();
   };
 
-  void onReceive(){
+  void onReceive()
+  {
     onReceiveCommand();
   }
 };

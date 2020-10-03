@@ -1,11 +1,11 @@
-#include "../AircraftWrapper.h"
+#include "../Aircraft.h"
 
 #ifdef PLATFORM_MBED
 
 #include "Utils.h"
 #include "Nature.h"
 
-bool AircraftWrapper::initialize()
+bool Aircraft::initialize()
 {
   // IM920
   transmitter_.initialize();
@@ -14,16 +14,21 @@ bool AircraftWrapper::initialize()
   receiver_.initialize();
   if (receiver_.isAvailable())
   {
-    receiver_.attach(this, &AircraftWrapper::onReceive);
+    receiver_.attach(this, &Aircraft::onReceive);
   }
 
   // LSM9DS1
   lsm_.initialize();
+  lsm_.setAccelScale(LSM9DS1::accel_scale::A_SCALE_4G);
   lsm_.setGyroScale(LSM9DS1::gyro_scale::G_SCALE_500DPS);
+  lsm_.setMagScale(LSM9DS1::mag_scale::M_SCALE_4GS);
+  lsm_.setAccelODR(LSM9DS1::accel_odr::A_ODR_952);
+  lsm_.setGyroODR(LSM9DS1::gyro_odr::G_ODR_952_BW_100);
+  lsm_.setMagODR(LSM9DS1::mag_odr::M_ODR_80);
 
   // LPS331
   lps_.initialize();
-  lps_.setResolution(LPS331_I2C_PRESSURE_AVG_512, LPS331_I2C_TEMP_AVG_128);
+  lps_.setResolution(LPS331_I2C_PRESSURE_AVG_384, LPS331_I2C_TEMP_AVG_64);
   lps_.setDataRate(LPS331_I2C_DATARATE_25HZ);
 
   // SD
@@ -46,8 +51,10 @@ bool AircraftWrapper::initialize()
   return isReady();
 }
 
-void AircraftWrapper::update()
+void Aircraft::update()
 {
+  receiver_.poll();
+  
   timer_.update();
 
   datas.time = timer_.now();
@@ -55,7 +62,7 @@ void AircraftWrapper::update()
   datas.deltaTime = timer_.delta();
 }
 
-bool AircraftWrapper::isReady(bool showDetail)
+bool Aircraft::isReady(bool showDetail)
 {
   bool allModulesAvailable = true;
 
@@ -76,12 +83,12 @@ bool AircraftWrapper::isReady(bool showDetail)
   return allModulesAvailable;
 }
 
-void AircraftWrapper::end()
+void Aircraft::end()
 {
   // end processing
 }
 
-void AircraftWrapper::getDatas()
+void Aircraft::getDatas()
 {
   lsm_.readAccel();
   lsm_.readGyro();
@@ -106,7 +113,7 @@ void AircraftWrapper::getDatas()
   // datas.latitude;
 }
 
-void AircraftWrapper::writeDatas()
+void Aircraft::writeDatas()
 {
   //sd.write()
   transmitter_.transmit("(" + to_XString(datas.roll) + ", " + to_XString(datas.pitch) + ", " + to_XString(datas.yaw) + ")");
