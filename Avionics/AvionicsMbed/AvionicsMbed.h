@@ -20,17 +20,18 @@ protected:
   IM920Wrapper transmitter_;
   LPSWrapper lps_;
   LSMWrapper lsm_;
+  DigitalIn flightPin_;
   //SDFileSystem sd(p5, p6, p7, p8, "sd");
-  //DigitalIn flightPin(p12);
   //PwmOut servo_1(p21), servo_2(p22), servo_3(p23);
 
 public:
-  Avionics()
-      : AvionicsBase(),
+  Avionics(bool hasFlightPin, bool imuFilter = true, bool useMagnInMadgwick = false)
+      : AvionicsBase(hasFlightPin, imuFilter, useMagnInMadgwick),
         receiver_("Receiver_A", p28, p27, p29, p30),
         transmitter_("Sender_A", p28, p27, p29, p30),
         lps_("LPS331_A", p9, p10, LPS331_I2C_SA0_HIGH),
-        lsm_("LSM9DS1_A", p9, p10)
+        lsm_("LSM9DS1_A", p9, p10),
+        flightPin_(p12)
   {
   }
 
@@ -40,6 +41,11 @@ public:
   {
     transmitter_.setSendToSerial(mode);
     receiver_.setSendToSerial(mode);
+  }
+
+  virtual bool flightpin() override
+  {
+    return hasFlightPin && flightPin_;
   }
 
 private:
