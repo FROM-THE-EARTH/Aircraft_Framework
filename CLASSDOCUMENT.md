@@ -129,7 +129,7 @@ void onReceiveCommand();
 ```C++
 xString getCSVFormattedData() const {省略}
 ```
-datasを元に、csvに書き込む用の文字列を返します。<span style="color: orange; ">**フォーマットを統一するため、SDへの書き込みはこの関数を使用してください。**</span>
+datasを元に、csvに書き込む用の文字列を返します。**フォーマットを統一するため、SDへの書き込みはこの関数を使用してください。**
 
 ```C++
 bool isElapsed(float time){省略}
@@ -174,3 +174,5 @@ void applyIMUFilter();
 
 ## Avionics Class
 ほぼAvionicsBaseクラスからオーバーライドした関数たちなので省略。
+
+AvionicsBaseの純粋仮想関数はここで全て実装します。
