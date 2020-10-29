@@ -53,7 +53,7 @@ Mbedではstd::string, arduinoではStringを使わなければならないた�
 XStringと同様に、Mbedとarduinoで使うべき関数が違うのでそれの切り替えもしてます。
 
 ## Filter
-9軸用フィルタです。Madgwickのみ実装(サードパーティ)済み。
+9軸用フィルタです。Madgwickのみ実装(サードパーティ製)済み。
 
 ## Constants
 その名の通りです。

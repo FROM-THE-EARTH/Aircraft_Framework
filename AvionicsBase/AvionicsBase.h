@@ -124,16 +124,17 @@ protected:
   // on receive command
   void onReceiveCommand();
 
-  xString getCSVFormattedData()
+  xString getCSVFormattedData() const
   {
     //const xString csvHeader = "time,temperature,pressure,accX,accY,accZ,gyroX,gyroY,gyroZ,magnX,magnY,magnZ,longitude,latitude";
 
     return (
-        to_XString(datas.time) + to_XString(datas.temperature) + to_XString(datas.pressure) 
-        + to_XString(datas.accel.x) + to_XString(datas.accel.y) + to_XString(datas.accel.z) 
-        + to_XString(datas.gyro.x) + to_XString(datas.gyro.y) + to_XString(datas.gyro.z) 
-        + to_XString(datas.magn.x) + to_XString(datas.magn.y) + to_XString(datas.magn.z) 
-        + to_XString(datas.longitude) + to_XString(datas.latitude));
+        to_XString(datas.time) + to_XString(datas.temperature) + to_XString(datas.pressure)
+        + to_XString(datas.accel.x) + to_XString(datas.accel.y) + to_XString(datas.accel.z)
+        + to_XString(datas.gyro.x) + to_XString(datas.gyro.y) + to_XString(datas.gyro.z)
+        + to_XString(datas.magn.x) + to_XString(datas.magn.y) + to_XString(datas.magn.z)
+        + to_XString(datas.longitude) + to_XString(datas.latitude)
+        );
   }
 
   bool isElapsed(float time)

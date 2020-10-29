@@ -3,11 +3,11 @@
 
 少なくとも9期代で作成した電装に関しては出来るような設計です。
 
-一部センサがまだ使えません（11月までにはします）
-
-詳細な仕様については[**DOCUMENT.md**](https://github.com/FROM-THE-EARTH/Avionics-Software/blob/master/DOCUMENT.md)に書いてます。
+プログラムの中身については[**DOCUMENT.md**](https://github.com/FROM-THE-EARTH/Avionics-Software/blob/master/DOCUMENT.md)に書いてます。
 
 本フレームワークを使用した電装のリポジトリ（[**FTE09ちんちろりん**](https://github.com/FROM-THE-EARTH/FTE09_chinchirorin)）
+
+Mbedのプログラムはちんちろりんで使用したものと同じです。Arduinoの方は全く手つけてません。
 
 ## 動作環境（確認済み）
 ### Mbed LPC1768
@@ -37,7 +37,7 @@
 4. 製作するロケットに応じて分離条件、開傘条件を以下のように記述する。
 5. ビルドする
 
-失敗する場合はMbed OSバージョンが違う可能性があります。動作確認済みのバージョンは6.2.0です。[**ここ**](https://os.mbed.com/mbed-os/releases/)からMbed OSのダウンロードができます。
+Mbedで失敗する場合はMbed OSバージョンが違う可能性があります。動作確認済みのバージョンは6.2.0です。[**ここ**](https://os.mbed.com/mbed-os/releases/)からMbed OSのダウンロードができます。オンラインコンパイラだと多分使えないです。
 
 搭載しているモジュールが異なる場合は必要に応じて書き換えて下さい。
 

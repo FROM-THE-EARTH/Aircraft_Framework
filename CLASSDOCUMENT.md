@@ -17,23 +17,23 @@
 
 AvionicsBaseクラスを見ると、
 ```C++
-virtual (method) = 0;
+virtual method() = 0;
 ```
 という見慣れない文字列があると思います。ググればすぐ出ますが、簡単に言うと、このクラスでは定義しないから継承したクラスでちゃんと定義してくださいってことです。
 
 例えば、センサからデータを取得する関数getDatas()はどんな電装を作っても必要になりますが、その中身はプラットフォームに依存します。そのため、基底クラスで「getDatas()は絶対実装しないとダメです！でもプラットフォーム依存なので継承したクラスで実装してね」とする必要があるわけです。
 
-この関数(純粋仮想関数)を含むクラスは抽象クラスと呼びます。
+この関数(純粋仮想関数と呼ぶ)を含むクラスは抽象クラスと呼びます。
 
 また、この関数を実装する際は
 ```C++
-virtual (method) override;
+virtual method() override;
 ```
 と宣言する必要があります。
 
 ちなみにpublic, privateはわかると思いますが、protectedは、このクラスを継承したクラスでは使えるような変数や関数です。
 
-以下各関数について解説します。virtual (method) = 0;の関数はプラットフォーム依存なんだなあと思ってください。
+以下各関数について解説します。virtual method() = 0;の関数はプラットフォーム依存なんだなあと思ってください。
 
 ### public method(main.cppで使用)
 ```C++
@@ -74,7 +74,7 @@ Function::**::Noneは何もしない(常にfalseを返す)関数です。
 ```C++
 virtual void update() = 0;
 ```
-毎回更新する何か。getDatasとは違います。主にタイマーの処理？
+毎回更新する何か。getDatasとは違います。タイマーの更新など。
 
 ```C++
 virtual void end() = 0;
@@ -84,7 +84,7 @@ virtual void end() = 0;
 ```C++
 virtual bool isReady(bool showDetail = true) = 0;
 ```
-全てのセンサが使用可能であればtrueを返します。showDetail=true(デフォルト)の場合は各センサの状況を無線で送信します。
+全てのセンサが使用可能であればtrueを返します。showDetail=trueの場合は各センサの状況を無線で送信します。(デフォルト)
 
 ```C++
 virtual void reboot() = 0;
@@ -127,7 +127,7 @@ void onReceiveCommand();
 コマンドを受信したときの動作を記述しています。"reboot"と受け取ったらreboot()を実行するなど。
 
 ```C++
-xString getCSVFormattedData(){省略}
+xString getCSVFormattedData() const {省略}
 ```
 datasを元に、csvに書き込む用の文字列を返します。<span style="color: orange; ">**フォーマットを統一するため、SDへの書き込みはこの関数を使用してください。**</span>
 
