@@ -39,17 +39,19 @@ class AvionicsBase
 
   float preTime_ = 0.0f;
 
+  const bool hasGPS_;
   const bool imuFilter_;
   const bool useMagnInMadgwick_;
 
   bool recording_ = false;
-
   bool detached_ = false, decelerationStarted_ = false;
 
   Sequence sequence_ = Sequence::ReadyToLaunch;
 
 protected:
   Datas datas;
+
+  const xString csvHeader = "time,temperature,pressure,accX,accY,accZ,gyroX,gyroY,gyroZ,magnX,magnY,magnZ,longitude,latitude";
 
 public:
   // main loop
@@ -64,19 +66,21 @@ public:
   // return datas
   const Datas &data() const { return datas; }
 
-  // conditions
+  // conditions.
   bool (*Condition_Launch)();
   bool (*Condition_Detach)() = Function::Condition::None;
   bool (*Condition_Deceleration)();
   bool (*Condition_Landing)();
 
-  // operations
+  // operations. called once
   void (*Operation_Detach)() = Function::Operation::None;
   void (*Operation_OpenParachute)();
+  void (*Operation_CloseServo)();
 
 protected:
-  AvionicsBase(bool imuFilter, bool useMagnInMadgwick)
-      : imuFilter_(imuFilter),
+  AvionicsBase(bool hasGPS, bool imuFilter, bool useMagnInMadgwick)
+      : hasGPS_(hasGPS),
+        imuFilter_(imuFilter),
         useMagnInMadgwick_(useMagnInMadgwick)
   {
   }
@@ -119,6 +123,18 @@ protected:
 
   // on receive command
   void onReceiveCommand();
+
+  xString getCSVFormattedData()
+  {
+    //const xString csvHeader = "time,temperature,pressure,accX,accY,accZ,gyroX,gyroY,gyroZ,magnX,magnY,magnZ,longitude,latitude";
+
+    return (
+        to_XString(datas.time) + to_XString(datas.temperature) + to_XString(datas.pressure) 
+        + to_XString(datas.accel.x) + to_XString(datas.accel.y) + to_XString(datas.accel.z) 
+        + to_XString(datas.gyro.x) + to_XString(datas.gyro.y) + to_XString(datas.gyro.z) 
+        + to_XString(datas.magn.x) + to_XString(datas.magn.y) + to_XString(datas.magn.z) 
+        + to_XString(datas.longitude) + to_XString(datas.latitude));
+  }
 
   bool isElapsed(float time)
   {

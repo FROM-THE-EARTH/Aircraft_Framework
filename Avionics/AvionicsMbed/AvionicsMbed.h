@@ -8,6 +8,7 @@ This program is developed under the mbed-os 6.2.0
 #include "../../Module/mbed_6.2.0/LPSWrapper/LPSWrapper.h"
 #include "../../Module/mbed_6.2.0/LSMWrapper/LSMWrapper.h"
 #include "../../Module/mbed_6.2.0/TimerWrapper/TimerWrapper.h"
+#include "../../Module/mbed_6.2.0/GPS/GPS.h"
 #include "mbed.h"
 
 class Avionics : public AvionicsBase
@@ -20,16 +21,18 @@ protected:
   IM920Wrapper transmitter_;
   LPSWrapper lps_;
   LSMWrapper lsm_;
+  GPS gps_;
   //SDFileSystem sd(p5, p6, p7, p8, "sd");
   //PwmOut servo_1(p21), servo_2(p22), servo_3(p23);
 
 public:
   Avionics(bool imuFilter = true, bool useMagnInMadgwick = false)
-      : AvionicsBase(imuFilter, useMagnInMadgwick),
+      : AvionicsBase(true, imuFilter, useMagnInMadgwick),
         receiver_("Receiver_A", p28, p27, p29, p30),
         transmitter_("Sender_A", p28, p27, p29, p30),
         lps_("LPS331_A", p9, p10, LPS331_I2C_SA0_HIGH),
-        lsm_("LSM9DS1_A", p9, p10)
+        lsm_("LSM9DS1_A", p9, p10),
+        gps_(p13, p14)
   {
   }
 

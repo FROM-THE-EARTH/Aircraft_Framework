@@ -67,7 +67,6 @@ void AvionicsBase::waiting()
   {
     transmit("Waiting");
   }
-  //beginRecord();
 }
 
 void AvionicsBase::waitingLaunch()
@@ -76,10 +75,11 @@ void AvionicsBase::waitingLaunch()
   {
     transmit("Waiting launch");
   }
+
   if (Condition_Launch())
   {
     datas.launchTime = datas.time;
-    //beginRecord();
+    beginRecord();
     sequence_ = Sequence::InFlight;
     transmit("Launch");
   }
@@ -91,6 +91,7 @@ void AvionicsBase::inFlight()
   {
     transmit(to_XString(datas.time));
   }
+
   if (!detached_ && Condition_Detach())
   {
     datas.detachTime = datas.time;
@@ -119,7 +120,7 @@ void AvionicsBase::inFlight()
 void AvionicsBase::landing()
 {
   // transmit gps info
-  if (isElapsed(5.0f))
+  if (hasGPS_ && isElapsed(5.0f))
   {
     transmit(to_XString(datas.latitude) + "N, " + to_XString(datas.longitude) + "E");
   }
@@ -131,18 +132,22 @@ AvionicsBase::Commands AvionicsBase::checkCommand(const xString &recv)
   {
     return Commands::Reboot;
   }
+
   if (recv == "escape")
   {
     return Commands::EscapePreparing;
   }
+
   if (recv == "check")
   {
     return Commands::CheckSensors;
   }
+
   if (recv == "svclose")
   {
     return Commands::ClosingServo;
   }
+  
   return Commands::None;
 }
 
@@ -164,7 +169,7 @@ void AvionicsBase::onReceiveCommand()
     break;
 
   case Commands::ClosingServo:
-    // Close servo
+    Operation_CloseServo();
     break;
 
   case Commands::None:

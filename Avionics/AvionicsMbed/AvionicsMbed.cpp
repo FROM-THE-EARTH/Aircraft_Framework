@@ -34,15 +34,15 @@ bool Avionics::initialize()
   // SD
   /*fp = fopen("/sd/data.csv", "w");
   if(fp != NULL) {
-      fprintf(fp,"time,temperature,pressure,accX,accY,accZ,gyroX,gyroY,gyroZ,magnX,magnY,magnZ,longitude,latitude\r\n");
+      fprintf(fp,csvHeader + "\r\n");
   }*/
 
-  // GPS
+  //GPS
+  NVIC_SetPriority(UART3_IRQn, 2);
 
   transmitter_.transmit("Initialized");
 
   //initialize datas
-  datas.maxAltitude = -1000.0f;
   datas.bootTime = 0.0f;
 
   //initialize time
@@ -109,15 +109,22 @@ void Avionics::getDatas()
     datas.maxAltitude = datas.altitude;
   }
 
-  // datas.longitude;
-  // datas.latitude;
+  if (gps_.result)
+  {
+    gps_.getgps();
+    datas.longitude = gps_.longitude;
+    datas.latitude = gps_.latitude;
+  }
+
+  transmit(std::to_string((int)datas.longitude) + ", " + std::to_string((int)datas.longitude));
 }
 
 void Avionics::writeDatas()
 {
-  //sd.write()
   transmitter_.transmit("(" + to_XString(datas.roll) + ", " + to_XString(datas.pitch) + ", " + to_XString(datas.yaw) + ")");
   transmitter_.transmit(to_XString(datas.pressure) + ", " + to_XString(datas.temperature));
+
+  //sd.write(getCSVFormattedData());
 }
 
 #endif
