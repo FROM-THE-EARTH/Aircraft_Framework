@@ -9,6 +9,7 @@ This program is developed under the mbed-os 6.2.0
 #include "../../Module/mbed_6.2.0/LSMWrapper/LSMWrapper.h"
 #include "../../Module/mbed_6.2.0/TimerWrapper/TimerWrapper.h"
 #include "../../Module/mbed_6.2.0/GPS/GPS.h"
+#include "../../Module/mbed_6.2.0/ADXL345_I2C/ADXL345_I2C.h"
 #include "mbed.h"
 
 class Avionics : public AvionicsBase
