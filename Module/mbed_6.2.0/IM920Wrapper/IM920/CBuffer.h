@@ -23,63 +23,75 @@
 #define CIRCBUFFER_H_
 
 template <class T>
-class CircBuffer {
+class CircBuffer
+{
 public:
-    CircBuffer(int length, void *addr = nullptr) {
+    CircBuffer(int length, void *addr = nullptr)
+    {
         write = 0;
         read = 0;
         size = length + 1;
-        if (addr) {
+        if (addr)
+        {
             buf = (T *)addr;
-        } else {
+        }
+        else
+        {
             buf = (T *)malloc(size * sizeof(T));
         }
         if (buf == nullptr)
             error("Can't allocate memory");
     };
 
-    bool isFull() {
+    bool isFull()
+    {
         return (((write + 1) % size) == read);
     };
 
-    bool isEmpty() {
+    bool isEmpty()
+    {
         return (read == write);
     };
 
-    void queue(T k) {
-        if (isFull()) {
-//            read++;
-//            read %= size;
+    void queue(T k)
+    {
+        if (isFull())
+        {
+            //read++;
+            //read %= size;
             return;
         }
         buf[write++] = k;
         write %= size;
     }
-    
-    void flush() {
+
+    void flush()
+    {
         read = 0;
         write = 0;
     }
-    
 
-    uint32_t available() {
+    uint32_t available()
+    {
         return (write >= read) ? write - read : size - read + write;
     };
 
-    bool dequeue(T * c) {
+    bool dequeue(T *c)
+    {
         bool empty = isEmpty();
-        if (!empty) {
+        if (!empty)
+        {
             *c = buf[read++];
             read %= size;
         }
-        return(!empty);
+        return (!empty);
     };
 
 private:
     volatile uint32_t write;
     volatile uint32_t read;
     uint32_t size;
-    T * buf;
+    T *buf;
 };
 
 #endif

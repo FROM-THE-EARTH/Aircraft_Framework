@@ -6,6 +6,7 @@ This program is developed under the mbed-os 6.2.0
 #include "../../ModuleWrapper.h"
 #include <string>
 
+
 class IM920Wrapper : public IM920, public ModuleWrapper
 {
 
@@ -18,7 +19,7 @@ public:
 
   virtual void initialize() override
   {
-    available = IM920::init();
+    available = true;
   }
 
   virtual bool isAvailable() override
@@ -33,5 +34,5 @@ public:
 
   void transmit(const xString &str);
 
-  xString receive();
+  xString received();
 };

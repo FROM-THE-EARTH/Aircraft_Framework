@@ -63,15 +63,15 @@ bool AvionicsBase::checkFunctions()
 
 void AvionicsBase::waiting()
 {
-  if (isElapsed(5.0f))
+  if (isElapsed(3.0f))
   {
-    transmit("Waiting");
+    transmit("Waiting " + to_XString(datas.time) + "s");
   }
 }
 
 void AvionicsBase::waitingLaunch()
 {
-  if (isElapsed(5.0f))
+  if (isElapsed(3.0f))
   {
     transmit("Waiting launch");
   }
@@ -79,48 +79,49 @@ void AvionicsBase::waitingLaunch()
   if (Condition_Launch())
   {
     datas.launchTime = datas.time;
-    beginRecord();
     sequence_ = Sequence::InFlight;
-    transmit("Launch");
+    transmit("Launch: Acc=" + to_XString(datas.accel.length()));
   }
 }
 
 void AvionicsBase::inFlight()
 {
-  if (isElapsed(5.0f))
-  {
-    transmit(to_XString(datas.time));
-  }
-
   if (!detached_ && Condition_Detach())
   {
     datas.detachTime = datas.time;
     Operation_Detach();
-    transmit("Detach");
     detached_ = true;
+    transmit("Detach");
   }
 
   if (!decelerationStarted_ && Condition_Deceleration())
   {
     datas.decelerationTime = datas.time;
     Operation_OpenParachute();
-    transmit("Open parachute");
     decelerationStarted_ = true;
+    transmit("Open parachute");
   }
 
-  if (Condition_Landing())
+  if (decelerationStarted_ && Condition_Landing())
   {
     datas.landingTime = datas.time;
+    Operation_CameraOff();
     endRecord();
-    transmit("Landing");
+    closeSDCard();
     sequence_ = Sequence::Landing;
+    transmit("Landing");
+  }
+
+  if (isElapsed(1.0f))
+  {
+    transmit(to_XString(datas.time - datas.launchTime) + "s, " + to_XString(datas.altitude) + "m");
   }
 }
 
 void AvionicsBase::landing()
 {
   // transmit gps info
-  if (hasGPS_ && isElapsed(5.0f))
+  if (hasGPS_ && isElapsed(2.0f))
   {
     transmit(to_XString(datas.latitude) + "N, " + to_XString(datas.longitude) + "E");
   }
@@ -145,31 +146,66 @@ AvionicsBase::Commands AvionicsBase::checkCommand(const xString &recv)
 
   if (recv == "svclose")
   {
-    return Commands::ClosingServo;
+    return Commands::CloseServo;
   }
-  
+
+  if (recv == "openpara")
+  {
+    return Commands::OpenParachute;
+  }
+
   return Commands::None;
 }
 
 void AvionicsBase::onReceiveCommand()
 {
-  switch (checkCommand(receive()))
+  switch (checkCommand(received()))
   {
   case Commands::Reboot:
+    transmit("Reboot");
     reboot();
     break;
 
   case Commands::EscapePreparing:
-    //beginRecord();
-    sequence_ = Sequence::ReadyToLaunch;
+    if (sequence_ == Sequence::Waiting)
+    {
+      transmit("Begin recording");
+      beginRecord();
+      Operation_CameraOn();
+      sequence_ = Sequence::ReadyToLaunch;
+    }
+    else
+    {
+      transmit("Cannot escape this sequence");
+    }
     break;
 
   case Commands::CheckSensors:
     isReady(true);
     break;
 
-  case Commands::ClosingServo:
-    Operation_CloseServo();
+  case Commands::CloseServo:
+    if (sequence_ == Sequence::Waiting)
+    {
+      Operation_CloseServo();
+      transmit("Close servo");
+    }
+    else
+    {
+      transmit("Cannot close servo in this sequence");
+    }
+    break;
+
+  case Commands::OpenParachute:
+    if (sequence_ == Sequence::Waiting)
+    {
+      Operation_OpenParachute();
+      transmit("Open paracute");
+    }
+    else
+    {
+      transmit("Cannot open parachute in this sequence");
+    }
     break;
 
   case Commands::None:

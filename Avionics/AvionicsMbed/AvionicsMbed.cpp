@@ -1,9 +1,9 @@
 #include "../Avionics.h"
+#include <cstdio>
 
 #ifdef PLATFORM_MBED
 
 #include "Utils.h"
-#include "Nature.h"
 
 bool Avionics::initialize()
 {
@@ -12,10 +12,7 @@ bool Avionics::initialize()
   transmitter_.transmit("Initializing");
 
   receiver_.initialize();
-  if (receiver_.isAvailable())
-  {
-    receiver_.attach(this, &Avionics::onReceive);
-  }
+  receiver_.attach(this, &Avionics::onReceive);
 
   // LSM9DS1
   lsm_.initialize();
@@ -26,20 +23,28 @@ bool Avionics::initialize()
   lsm_.setGyroODR(LSM9DS1::gyro_odr::G_ODR_952_BW_100);
   lsm_.setMagODR(LSM9DS1::mag_odr::M_ODR_80);
 
-  // LPS331
-  lps_.initialize();
-  lps_.setResolution(LPS331_I2C_PRESSURE_AVG_384, LPS331_I2C_TEMP_AVG_64);
-  lps_.setDataRate(LPS331_I2C_DATARATE_25HZ);
+  // LPS33HW
+  lps_.set_odr(LPS22HB::lps22hb_odr::LPS22HB_ODR_25HZ);
 
-  // SD
-  /*fp = fopen("/sd/data.csv", "w");
-  if(fp != NULL) {
-      fprintf(fp,csvHeader + "\r\n");
-  }*/
+  // ADXL345
+  adxl_.initialize();
 
   //GPS
-  NVIC_SetPriority(UART3_IRQn, 2);
+  NVIC_SetPriority(UART2_IRQn, 2);
 
+  //SD
+  sd_.initialize();
+  if (sd_.isInitialized())
+  {
+    sd_.open("data.csv");
+    sd_.write(csvHeader + "\n");
+  }
+  else
+  {
+    transmitter_.transmit("Failed to initialize SD Card");
+  }
+
+  //end initialization
   transmitter_.transmit("Initialized");
 
   //initialize datas
@@ -53,7 +58,7 @@ bool Avionics::initialize()
 
 void Avionics::update()
 {
-  receiver_.poll();
+  receiver_.update();
 
   timer_.update();
 
@@ -70,6 +75,8 @@ bool Avionics::isReady(bool showDetail)
   allModulesAvailable &= receiver_.isAvailable();
   allModulesAvailable &= lps_.isAvailable();
   allModulesAvailable &= lsm_.isAvailable();
+  allModulesAvailable &= adxl_.isAvailable();
+  allModulesAvailable &= sd_.isAvailable();
 
   if (showDetail)
   {
@@ -77,7 +84,10 @@ bool Avionics::isReady(bool showDetail)
     transmitter_.transmit(receiver_.status());
     transmitter_.transmit(lps_.status());
     transmitter_.transmit(lsm_.status());
+    transmitter_.transmit(adxl_.status());
+    transmitter_.transmit(sd_.status());
   }
+
   transmitter_.transmit("Modules: " + xString(allModulesAvailable ? "OK" : "NG"));
 
   return allModulesAvailable;
@@ -94,12 +104,15 @@ void Avionics::getDatas()
   lsm_.readGyro();
   lsm_.readMag();
 
-  datas.pressure = lps_.getPressure();
-  datas.temperature = lps_.getTemperature();
+  lps_.get();
+  datas.pressure = lps_.pressure();
+  datas.temperature = lps_.temperature();
 
-  datas.accel = Vec3(lsm_.ax, lsm_.ay, lsm_.az);
-  datas.gyro = Vec3(lsm_.gx, lsm_.gy, lsm_.gz);
-  datas.magn = Vec3(lsm_.mx, lsm_.my, lsm_.mz);
+  datas.accel = {lsm_.ax, lsm_.ay, lsm_.az};
+  datas.gyro = {lsm_.gx, lsm_.gy, lsm_.gz};
+  datas.magn = {lsm_.mx, lsm_.my, lsm_.mz};
+
+  datas.largeAcc = adxl_.getOutput();
 
   datas.altitude =
       Utils::calcAltitude(basePressure, datas.pressure, datas.temperature);
@@ -109,22 +122,17 @@ void Avionics::getDatas()
     datas.maxAltitude = datas.altitude;
   }
 
+  gps_.getgps();
   if (gps_.result)
   {
-    gps_.getgps();
     datas.longitude = gps_.longitude;
     datas.latitude = gps_.latitude;
   }
-
-  transmit(std::to_string((int)datas.longitude) + ", " + std::to_string((int)datas.longitude));
 }
 
 void Avionics::writeDatas()
 {
-  transmitter_.transmit("(" + to_XString(datas.roll) + ", " + to_XString(datas.pitch) + ", " + to_XString(datas.yaw) + ")");
-  transmitter_.transmit(to_XString(datas.pressure) + ", " + to_XString(datas.temperature));
-
-  //sd.write(getCSVFormattedData());
+  sd_.write(getCSVFormattedData() + "\n");
 }
 
 #endif

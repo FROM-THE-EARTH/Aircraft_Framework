@@ -142,7 +142,6 @@ void ADXL345_I2C::getOutput(int* readings){
 }
  
  
- 
 char ADXL345_I2C::getDeviceID() {  
     return SingleByteRead(ADXL345_DEVID_REG);
     }

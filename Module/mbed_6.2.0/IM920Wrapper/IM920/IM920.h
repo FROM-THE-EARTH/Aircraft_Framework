@@ -43,21 +43,25 @@
 #define INFO(x, ...)
 #endif
 
-class IM920 {
+class IM920
+{
 public:
-  enum Response {
+  enum Response
+  {
     RES_NULL,
     RES_RDID,
     RES_RDNN,
     RES_RDRS,
   };
 
-  enum Mode {
+  enum Mode
+  {
     MODE_COMMAND,
     MODE_DATA_RX,
   };
 
-  enum Status {
+  enum Status
+  {
     STAT_NONE,
     STAT_SLEEP,
   };
@@ -70,15 +74,33 @@ public:
   int send(char *buf, int len);
   int recv(char *buf, int len);
 
-  void attach(void (*fptr)() = NULL) {
-    _func = Callback<void()>(fptr);
+  void attach(void (*fptr)() = NULL)
+  {
+    _func = callback(fptr); //Callback<void()>(fptr);
     //_func.attach(fptr);
   }
-  template <typename T> void attach(T *tptr, void (T::*mptr)()) {
-    if ((mptr != NULL) && (tptr != NULL)) {
-      _func = Callback<void()>(tptr, mptr);
+  template <typename T>
+  void attach(T *tptr, void (T::*mptr)())
+  {
+    if ((mptr != NULL) && (tptr != NULL))
+    {
+      _func = callback(tptr, mptr); // Callback<void()>(tptr, mptr);
       // _func.attach(tptr, mptr);
     }
+    else
+    {
+      printf("IM920.h: callback is null");
+    }
+  }
+
+  bool readable()
+  {
+    return static_cast<bool>(_im.readable());
+  }
+
+  bool writeable()
+  {
+    return static_cast<bool>(_im.writeable());
   }
 
   // ----- IM920_util.cpp -----
@@ -105,7 +127,8 @@ private:
   Callback<void()> _func;
   // FunctionPointer _func;
 
-  struct STATE {
+  struct STATE
+  {
     int id, node, rssi;
 
     time_t time;

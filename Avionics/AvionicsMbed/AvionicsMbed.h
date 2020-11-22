@@ -4,12 +4,15 @@ This program is developed under the mbed-os 6.2.0
 
 #include "AvionicsBase.h"
 
-#include "../../Module/mbed_6.2.0/IM920Wrapper/IM920Wrapper.h"
-#include "../../Module/mbed_6.2.0/LPSWrapper/LPSWrapper.h"
-#include "../../Module/mbed_6.2.0/LSMWrapper/LSMWrapper.h"
-#include "../../Module/mbed_6.2.0/TimerWrapper/TimerWrapper.h"
-#include "../../Module/mbed_6.2.0/GPS/GPS.h"
-#include "../../Module/mbed_6.2.0/ADXL345_I2C/ADXL345_I2C.h"
+#include "IM920Wrapper.h"
+#include "IM920SoftSerial.h"
+#include "LPS22HBWrapper.h"
+#include "LSMWrapper.h"
+#include "ADXLWrapper.h"
+#include "TimerWrapper.h"
+#include "GPS.h"
+#include "SDCardWrapper.h"
+
 #include "mbed.h"
 
 class Avionics : public AvionicsBase
@@ -18,22 +21,24 @@ protected:
   TimerWrapper timer_;
 
   //Modules
-  IM920Wrapper receiver_;
+  IM920SoftSerial receiver_;
   IM920Wrapper transmitter_;
-  LPSWrapper lps_;
+  LPS22HBWrapper lps_;
   LSMWrapper lsm_;
+  ADXLWrapper adxl_;
   GPS gps_;
-  //SDFileSystem sd(p5, p6, p7, p8, "sd");
-  //PwmOut servo_1(p21), servo_2(p22), servo_3(p23);
+  SDCardWrapper sd_;
 
 public:
   Avionics(bool imuFilter = true, bool useMagnInMadgwick = false)
       : AvionicsBase(true, imuFilter, useMagnInMadgwick),
-        receiver_("Receiver_A", p28, p27, p29, p30),
-        transmitter_("Sender_A", p28, p27, p29, p30),
-        lps_("LPS331_A", p9, p10, LPS331_I2C_SA0_HIGH),
-        lsm_("LSM9DS1_A", p9, p10),
-        gps_(p13, p14)
+        receiver_("Receiver", p15, p16),
+        transmitter_("Sender", p28, p27, p29, p30),
+        lps_("LPS33HW", p9, p10),
+        lsm_("LSM9DS1", p9, p10),
+        adxl_("ADXL345", p9, p10),
+        gps_(p13, p14),
+        sd_("SD", p5, p6, p7, p8)
   {
   }
 
@@ -52,6 +57,7 @@ private:
 
   virtual void reboot() override
   {
+    sd_.close();
     __NVIC_SystemReset();
   }
 
@@ -66,13 +72,16 @@ private:
     transmitter_.transmit(str);
   };
 
-  virtual xString receive() override
+  virtual xString received() override
   {
-    return receiver_.receive();
+    return receiver_.received();
   };
 
-  void onReceive()
-  {
+  virtual void closeSDCard() override{
+    sd_.close();
+  }
+
+  void onReceive(){
     onReceiveCommand();
   }
 };
