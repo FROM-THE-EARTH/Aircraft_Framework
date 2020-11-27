@@ -1,6 +1,6 @@
 # Avionics Class Document
 
-作りながら書いてるので所々間違っているのがあるかもしれません。
+所々更新しきれていないところがあります。
 
 ## AvionicsBase Class
 
