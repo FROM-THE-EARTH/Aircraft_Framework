@@ -1,4 +1,5 @@
 #include "IM920.h"
+#include <cstdio>
 
 void IM920::recvData (char c) {
     static int sub, len, count;

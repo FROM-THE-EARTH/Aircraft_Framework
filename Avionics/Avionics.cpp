@@ -1,10 +1,5 @@
 #include "../Avionics.h"
 
-#ifdef PLATFORM_ARDUINO
-
-#include "../../Utils/Utils.h"
-#include "../../Constants/Nature.h"
-
 bool Avionics::initialize()
 {
   return isReady();
@@ -16,11 +11,14 @@ void Avionics::update()
 
 bool Avionics::isReady(bool showDetail)
 {
-  return false;
+  bool allModulesAvailable = true;
+
+  return allModulesAvailable;
 }
 
 void Avionics::end()
 {
+  // end processing
 }
 
 void Avionics::getDatas()
@@ -30,5 +28,3 @@ void Avionics::getDatas()
 void Avionics::writeDatas()
 {
 }
-
-#endif

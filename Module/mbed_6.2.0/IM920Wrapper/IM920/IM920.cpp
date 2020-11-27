@@ -17,7 +17,8 @@
  */
 #include "IM920.h"
 
-IM920::IM920 (PinName tx, PinName rx, PinName busy, PinName reset, int baud) : _im(tx, rx) {
+IM920::IM920(PinName tx, PinName rx, PinName busy, PinName reset, int baud) : _im(tx, rx)
+{
 
     memset(&_state, 0, sizeof(_state));
     _state.data = new CircBuffer<char>(CFG_DATA_SIZE);
@@ -25,45 +26,68 @@ IM920::IM920 (PinName tx, PinName rx, PinName busy, PinName reset, int baud) : _
     initUart(busy, reset, baud);
     setReset(true);
     wait_us(100000);
-    //wait_ms(100);
     setReset(false);
 }
 
-int IM920::init () {
+int IM920::init()
+{
 
     cmdRDID();
     cmdRDNN();
-    cmdSTPO(3);  // 10dBm
-    cmdSTRT(2);  // 1.25kbps
+    cmdSTPO(3); // 10dBm
+    cmdSTRT(2); // 1.25kbps
     return 0;
 }
 
-void IM920::poll () {
+void IM920::poll()
+{
+    if (_func == nullptr)
+    {
+        return;
+    }
 
     if (_state.received && _state.buf != NULL)
-      if (!_state.data->isEmpty()) {
-        _func.call();
-        if (_state.data->isEmpty()) {
-            _state.received = false;
+    {
+        if (!_state.data->isEmpty())
+        {
+            _func.call();
+            if (_state.data->isEmpty())
+            {
+                _state.received = false;
+            }
         }
     }
 }
 
-int IM920::send (char *buf, int len) {
-
-    if (len > 64) len = 64;
+int IM920::send(char *buf, int len)
+{
+    if (len > 64)
+    {
+        len = 64;
+    }
 
     return sendData(buf, len);
 }
 
-int IM920::recv (char *buf, int len) {
+int IM920::recv(char *buf, int len)
+{
     int i;
 
-    if (_state.data == NULL) return 0;
-    while (!_state.received && _state.mode != MODE_COMMAND);
+    if (_state.data == NULL)
+        return 0;
+
+    while (!_state.received && _state.mode != MODE_COMMAND)
+        ;
+
     _state.received = false;
-    for (i = 0; i < len; i ++) {
-        if (_state.data->dequeue(&buf[i]) == false) break;
+
+    for (i = 0; i < len; i++)
+    {
+        if (_state.data->dequeue(&buf[i]) == false)
+        {
+            break;
+        }
     }
+
     return i;
 }

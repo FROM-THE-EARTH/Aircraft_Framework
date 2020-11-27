@@ -36,7 +36,6 @@ public:
     
     float longitude;//経度
     float latitude;//緯度
-    //上の二つは自動的に更新される この二つを読むことでデータ取得が出来る
     
     bool result;//trueで成功、falseで失敗
     char buf[100];
