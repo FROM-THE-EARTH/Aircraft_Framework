@@ -7,13 +7,10 @@
 
 本フレームワークを使用した電装のリポジトリ（[**FTE09ちんちろりん**](https://github.com/FROM-THE-EARTH/FTE09_chinchirorin)）
 
-Mbedのプログラムはちんちろりんで使用したものと同じです。Arduinoの方は全く手つけてません。
-
 ## 動作環境（確認済み）
 ### Mbed LPC1768
 - OS: Mbed OS 6.2.0
 - 開発環境: Mbed Studio
-- 使用センサ: IM920, LSM9DS1, MM-TXS03, ADXL03, GYSFDMAXB, CK-40
 
 ### Arduino nano
 
