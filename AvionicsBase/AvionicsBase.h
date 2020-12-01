@@ -1,8 +1,13 @@
-#pragma once
+#ifndef INCLUDE_AVIONICSBASE_H
+#define INCLUDE_AVIONICSBASE_H
 
-#include "../Filter/MadgwickAHRS.h"
+
 #include "../Type/Datas.h"
 #include "../Type/XString.h"
+#include "../Utils/Utils.h"
+#include "../Filter/MadgwickAHRS.h"
+#include "../telemetry-protocol/telemetry.h"
+
 
 namespace Function
 {
@@ -24,16 +29,6 @@ class AvionicsBase
     ReadyToLaunch,
     InFlight,
     Landing
-  };
-
-  enum class Commands
-  {
-    None,
-    Reboot,
-    EscapePreparing,
-    CheckSensors,
-    CloseServo,
-    OpenParachute
   };
 
   Madgwick madgwick_;
@@ -183,9 +178,9 @@ private:
   // landing
   void landing();
 
-  // check received command
-  Commands checkCommand(const xString &recv);
-
   // imu filter
   void applyIMUFilter();
 };
+
+
+#endif

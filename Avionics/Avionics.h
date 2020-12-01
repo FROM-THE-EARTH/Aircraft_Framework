@@ -1,8 +1,9 @@
-/*
-This program is developed under the mbed-os 6.2.0
-*/
+#ifndef INCLUDE_AVIONICS_H
+#define INCLUDE_AVIONICS_H
 
-#include "AvionicsBase.h"
+
+#include "../AvionicsBase/AvionicsBase.h"
+
 
 class Avionics : public AvionicsBase
 {
@@ -41,6 +42,7 @@ private:
 
   virtual xString received() override
   {
+    return xString();
   };
 
   virtual void closeSDCard() override{
@@ -49,3 +51,6 @@ private:
   void onReceive(){
   }
 };
+
+
+#endif

@@ -1,4 +1,4 @@
-#include "../Avionics.h"
+#include "Avionics.h"
 
 bool Avionics::initialize()
 {

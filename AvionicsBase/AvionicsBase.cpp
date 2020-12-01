@@ -1,5 +1,4 @@
 #include "AvionicsBase.h"
-#include "../Utils/Utils.h"
 
 void AvionicsBase::begin()
 {
@@ -127,46 +126,18 @@ void AvionicsBase::landing()
   }
 }
 
-AvionicsBase::Commands AvionicsBase::checkCommand(const xString &recv)
-{
-  if (recv == "reboot")
-  {
-    return Commands::Reboot;
-  }
-
-  if (recv == "escape")
-  {
-    return Commands::EscapePreparing;
-  }
-
-  if (recv == "check")
-  {
-    return Commands::CheckSensors;
-  }
-
-  if (recv == "svclose")
-  {
-    return Commands::CloseServo;
-  }
-
-  if (recv == "openpara")
-  {
-    return Commands::OpenParachute;
-  }
-
-  return Commands::None;
-}
-
 void AvionicsBase::onReceiveCommand()
 {
-  switch (checkCommand(received()))
+  auto cmd = TelemetryJudgeCommand(received().c_str());
+
+  switch (cmd)
   {
-  case Commands::Reboot:
+  case CmdReboot:
     transmit("Reboot");
     reboot();
     break;
 
-  case Commands::EscapePreparing:
+  case CmdEscape:
     if (sequence_ == Sequence::Waiting)
     {
       transmit("Begin recording");
@@ -180,23 +151,23 @@ void AvionicsBase::onReceiveCommand()
     }
     break;
 
-  case Commands::CheckSensors:
+  case CmdCheckSensors:
     isReady(true);
     break;
 
-  case Commands::CloseServo:
+  case CmdCloseParachute:
     if (sequence_ == Sequence::Waiting)
     {
       Operation_CloseServo();
-      transmit("Close servo");
+      transmit("Close parachute");
     }
     else
     {
-      transmit("Cannot close servo in this sequence");
+      transmit("Cannot close parachute in this sequence");
     }
     break;
 
-  case Commands::OpenParachute:
+  case CmdOpenParachute:
     if (sequence_ == Sequence::Waiting)
     {
       Operation_OpenParachute();
@@ -208,7 +179,7 @@ void AvionicsBase::onReceiveCommand()
     }
     break;
 
-  case Commands::None:
+  case CmdUnknown:
     transmit("Invalid command");
     break;
   }
@@ -218,11 +189,14 @@ void AvionicsBase::applyIMUFilter()
 {
   if (useMagnInMadgwick_)
   {
-    madgwick_.update(datas.accel, datas.gyro, datas.magn, datas.deltaTime);
+    madgwick_.update(datas.gyro.x, datas.gyro.y, datas.gyro.z,
+                     datas.accel.x, datas.accel.y, datas.accel.z,
+                     datas.magn.x, datas.magn.y, datas.magn.z, datas.deltaTime);
   }
   else
   {
-    madgwick_.update(datas.accel, datas.gyro, datas.deltaTime);
+    madgwick_.updateIMU(datas.gyro.x, datas.gyro.y, datas.gyro.z,
+                        datas.accel.x, datas.accel.y, datas.accel.z, datas.deltaTime);
   }
 
   datas.roll = madgwick_.getRoll();

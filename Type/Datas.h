@@ -1,4 +1,5 @@
-#pragma once
+#ifndef INCLUDE_DATAS_H
+#define INCLUDE_DATAS_H
 
 #include "Vec3.h"
 
@@ -23,3 +24,6 @@ struct Datas
   //Max, Min
   float maxAltitude = -1000.0f; //[m]
 };
+
+
+#endif

@@ -1,6 +1,10 @@
-#include "Utils.h"
+#ifndef INCLUDE_UTILS_H
+#define INCLUDE_UTILS_H
+
+
 #include "../Constants/MathConstants.h"
-#include "../PlatformDefinition.h"
+
+#define PLATFORM_MBED
 
 #ifdef PLATFORM_MBED
 #include <cmath>
@@ -41,3 +45,6 @@ namespace Utils
            (temperature + 273.15) * 153.8461538461538;
   }
 } // namespace Utils
+
+
+#endif

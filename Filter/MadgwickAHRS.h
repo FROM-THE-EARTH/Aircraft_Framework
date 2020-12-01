@@ -17,7 +17,6 @@
 //=============================================================================================
 #ifndef MadgwickAHRS_h
 #define MadgwickAHRS_h
-#include "../Type/Vec3.h"
 
 //--------------------------------------------------------------------------------------------
 // Variable declaration
@@ -42,16 +41,6 @@ private:
 public:
     Madgwick(void);
     //void begin(float sampleFrequency) { invSampleFreq = 1.0f / sampleFrequency; }
-
-    void update(const Vec3& accel, const Vec3& gyro, float dt)
-    {
-        updateIMU(gyro.x, gyro.y, gyro.z, accel.x, accel.y, accel.z, dt);
-    }
-
-    void update(const Vec3& accel, const Vec3& gyro, const Vec3& magn, float dt)
-    {
-        update(gyro.x, gyro.y, gyro.z, accel.x, accel.y, accel.z, magn.x, magn.y, magn.z, dt);
-    }
 
     void update(float gx, float gy, float gz, float ax, float ay, float az, float mx, float my, float mz, float dt);
     void updateIMU(float gx, float gy, float gz, float ax, float ay, float az, float dt);

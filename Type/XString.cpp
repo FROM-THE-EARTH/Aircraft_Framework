@@ -1,5 +1,8 @@
 #include "XString.h"
 
+//-------------------------------------------------------------
+// For platform mbed
+//-------------------------------------------------------------
 #ifdef PLATFORM_MBED
 std::string to_XString(int x)
 {
@@ -11,6 +14,10 @@ std::string to_XString(float x)
 }
 #endif
 
+
+//-------------------------------------------------------------
+// For platform arduino
+//-------------------------------------------------------------
 #ifdef PLATFORM_ARDUINO
 String to_XString()
 {

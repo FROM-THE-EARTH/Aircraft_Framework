@@ -1,22 +1,12 @@
 # Avionics
-ハイブリッドロケット電装の開発を容易にするためのフレームワークです。
+ハイブリッドロケット電装の開発を容易にするためのフレームワークです。<br>
+少なくとも9期代で作成した電装に関しては出来るような設計です。<br>
+また、今後テレメトリシステムを規格化する予定なので、これに対応したソフトウェアを開発できるようにする予定です。<br>
+プログラムの中身については[**DOCUMENT.md**](https://github.com/FROM-THE-EARTH/Avionics-Software/blob/master/DOCUMENT.md)に書いてます。<br>
+過去のバージョンで作成したものですが、本フレームワークを使用した電装のリポジトリ（[**FTE09ちんちろりん**](https://github.com/FROM-THE-EARTH/FTE09_chinchirorin)）みれば大体わかると思います。
 
-少なくとも9期代で作成した電装に関しては出来るような設計です。
-
-プログラムの中身については[**DOCUMENT.md**](https://github.com/FROM-THE-EARTH/Avionics-Software/blob/master/DOCUMENT.md)に書いてます。
-
-本フレームワークを使用した電装のリポジトリ（[**FTE09ちんちろりん**](https://github.com/FROM-THE-EARTH/FTE09_chinchirorin)）
-
-## 動作環境（確認済み）
-### Mbed LPC1768
-- OS: Mbed OS 6.2.0
-- 開発環境: Mbed Studio
-
-### Arduino nano
-
-  センサ類の確認はしてません。書き込みは可能。<br>
-  以下のようなディレクトリ構成にしないと読み込んでくれないらしいです。<br>
-  プロジェクト名は適当(例:denso)、densoディレクトリ下にsrcディレクトリ(必ずこの名前)を置き、その下に全部置く。
+　Arduinoの場合、以下のようなディレクトリ構成にしないと読み込んでくれないらしいです。<br>
+プロジェクト名は適当(例:denso)、densoディレクトリ下にsrcディレクトリ(必ずこの名前)を置き、その下に全部置く。
 
   denso/<br>
   &emsp;&emsp;├ denso.ino<br>
@@ -24,19 +14,13 @@
   &emsp;&emsp;&emsp;&emsp;├ Avionics/<br>
   &emsp;&emsp;&emsp;&emsp;├ AvionicsBase/<br>
   &emsp;&emsp;&emsp;&emsp;├ ...
-  
-  Arduinoに知見のある方、電装開発ついでにフレームワークの方もアップデートしてもらえると今後役立つと思います。
 
 ## 利用方法
 1. ソースコードを全てプロジェクト下に置く
-2. PlatformDefinition.hで、使用するプラットフォームに応じて#defineを編集する。
+2. AvionicsBaseクラスを継承したAvionicsクラスを実装する。センサーのライブラリ等は自分で用意する。
 3. 以下のようなコードを記述する
 4. 製作するロケットに応じて分離条件、開傘条件を以下のように記述する。
 5. ビルドする
-
-Mbedで失敗する場合はMbed OSバージョンが違う可能性があります。動作確認済みのバージョンは6.2.0です。[**ここ**](https://os.mbed.com/mbed-os/releases/)からMbed OSのダウンロードができます。オンラインコンパイラだと多分使えないです。
-
-搭載しているモジュールが異なる場合は必要に応じて書き換えて下さい。
 
 ```C++
 /* Mbed */ 

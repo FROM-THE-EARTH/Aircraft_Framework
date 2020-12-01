@@ -1,6 +1,6 @@
-#pragma once
+#ifndef INCLUDE_VEC3_H
+#define INCLUDE_VEC3_H
 
-#include "../PlatformDefinition.h"
 #include "../Utils/Utils.h"
 #include "../Type/XString.h"
 
@@ -129,3 +129,6 @@ inline constexpr Vec3 operator*(float value, const Vec3 &v)
 {
   return {value * v.x, value * v.y, value * v.z};
 }
+
+
+#endif

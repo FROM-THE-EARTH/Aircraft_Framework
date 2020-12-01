@@ -2,13 +2,11 @@
 
 Avionicsクラスについては[**CLASSDOCUMENT.md**](https://github.com/FROM-THE-EARTH/Avionics-Software/blob/master/CLASSDOCUMENT.md)でより詳しく解説してます。
 
-プラットフォームの切り替えはPlatformDefinition.hで#defineを切り替えて行います。見ればわかると思いますがあまり美しくはないです。
-
 ## Class構成
 
 ### 概要
 
-AvionicsBaseクラスを基底クラスとし、このクラスを継承したクラスとして、mbed, arduino, etc...用にAvionicsクラスを作成していきます。
+AvionicsBaseクラスを基底クラスとし、このクラスを継承したクラスとしてAvionicsクラスを作成していきます。
 
 Avionicsクラスにプラットフォーム依存の動作を記述します。
 
