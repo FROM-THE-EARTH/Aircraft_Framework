@@ -1,6 +1,6 @@
-#include "AvionicsBase.h"
+#include "Avionics.h"
 
-void AvionicsBase::begin()
+void Avionics::begin()
 {
   if (!checkFunctions())
   {
@@ -46,7 +46,7 @@ void AvionicsBase::begin()
   }
 }
 
-bool AvionicsBase::checkFunctions()
+bool Avionics::checkFunctions()
 {
   bool ok = true;
 
@@ -60,17 +60,17 @@ bool AvionicsBase::checkFunctions()
   return ok;
 }
 
-void AvionicsBase::waiting()
+void Avionics::waiting()
 {
-  if (isElapsed(3.0f))
+  if (elapsedTimer_.isElapsed(3.0f))
   {
     transmit("Waiting " + to_XString(datas.time) + "s");
   }
 }
 
-void AvionicsBase::waitingLaunch()
+void Avionics::waitingLaunch()
 {
-  if (isElapsed(3.0f))
+  if (elapsedTimer_.isElapsed(3.0f))
   {
     transmit("Waiting launch");
   }
@@ -83,7 +83,7 @@ void AvionicsBase::waitingLaunch()
   }
 }
 
-void AvionicsBase::inFlight()
+void Avionics::inFlight()
 {
   if (!detached_ && Condition_Detach())
   {
@@ -111,22 +111,22 @@ void AvionicsBase::inFlight()
     transmit("Landing");
   }
 
-  if (isElapsed(1.0f))
+  if (elapsedTimer_.isElapsed(1.0f))
   {
     transmit(to_XString(datas.time - datas.launchTime) + "s, " + to_XString(datas.altitude) + "m");
   }
 }
 
-void AvionicsBase::landing()
+void Avionics::landing()
 {
   // transmit gps info
-  if (hasGPS_ && isElapsed(2.0f))
+  if (hasGPS_ && elapsedTimer_.isElapsed(2.0f))
   {
     transmit(to_XString(datas.latitude) + "N, " + to_XString(datas.longitude) + "E");
   }
 }
 
-void AvionicsBase::onReceiveCommand()
+void Avionics::onReceiveCommand()
 {
   auto cmd = TelemetryJudgeCommand(received().c_str());
 
@@ -185,7 +185,7 @@ void AvionicsBase::onReceiveCommand()
   }
 }
 
-void AvionicsBase::applyIMUFilter()
+void Avionics::applyIMUFilter()
 {
   if (useMagnInMadgwick_)
   {

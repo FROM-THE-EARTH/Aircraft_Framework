@@ -1,19 +1,18 @@
-#ifndef INCLUDE_AVIONICSBASE_H
-#define INCLUDE_AVIONICSBASE_H
-
+#ifndef INCLUDE_AVIONICS_H
+#define INCLUDE_AVIONICS_H
 
 #include "../Type/Datas.h"
 #include "../Type/XString.h"
-#include "../Utils/Utils.h"
+#include "../Type/ElapsedTimer.h"
 #include "../Filter/MadgwickAHRS.h"
 #include "../telemetry-protocol/telemetry.h"
-
 
 namespace Function
 {
   namespace Condition
   {
     static bool None() { return false; }
+    static bool Always() { return true; }
   } // namespace Condition
   namespace Operation
   {
@@ -21,7 +20,7 @@ namespace Function
   } // namespace Operation
 } // namespace Function
 
-class AvionicsBase
+class Avionics
 {
   enum class Sequence
   {
@@ -31,35 +30,34 @@ class AvionicsBase
     Landing
   };
 
-  Madgwick madgwick_;
-
-  float preTime_ = 0.0f;
-
   const bool hasGPS_;
   const bool imuFilter_;
   const bool useMagnInMadgwick_;
 
+  const xString csvHeader = "time,temperature,pressure,accX,accY,accZ,gyroX,gyroY,gyroZ,magnX,magnY,magnZ,largeAccX,largeAccY,largeAccZ,longitude,latitude,roll,pitch,yaw";
+
+  Datas datas;
+  Madgwick madgwick_;
+  ElapsedTimer elapsedTimer_;
+  Sequence sequence_ = Sequence::Waiting;
+
   bool recording_ = false;
   bool detached_ = false, decelerationStarted_ = false;
 
-  Sequence sequence_ = Sequence::Waiting;
-
-protected:
-  Datas datas;
-
   float basePressure = 1020.2f;
 
-  const xString csvHeader = "time,temperature,pressure,accX,accY,accZ,gyroX,gyroY,gyroZ,magnX,magnY,magnZ,largeAccX,largeAccY,largeAccZ,longitude,latitude,roll,pitch,yaw";
-
 public:
+  //--------------------------------------
+  // Core
+  //--------------------------------------
   // main loop
   void begin();
 
   // initialize modules
-  virtual bool initialize() = 0;
+  bool initialize();
 
   // whether to show debug
-  virtual void setDebugMode(bool mode) = 0;
+  void setDebugMode(bool mode);
 
   // return datas
   const Datas &data() const { return datas; }
@@ -71,7 +69,7 @@ public:
   bool (*Condition_Landing)();
 
   // operations. called once
-  
+
   // called when condition is true
   void (*Operation_Detach)() = Function::Operation::None;
 
@@ -87,43 +85,44 @@ public:
   // called when landing
   void (*Operation_CameraOff)() = Function::Operation::None;
 
-protected:
-  AvionicsBase(bool hasGPS, bool imuFilter, bool useMagnInMadgwick)
+  Avionics(bool hasGPS, bool imuFilter = true, bool useMagnInMadgwick = false)
       : hasGPS_(hasGPS),
         imuFilter_(imuFilter),
         useMagnInMadgwick_(useMagnInMadgwick)
   {
   }
 
+private:
+
   //--------------------------------------
-  // Defines in Avionics(Platform) class
+  // Platform-dependent
   //--------------------------------------
   // time step etc...
-  virtual void update() = 0;
+  void update();
 
   // end processing
-  virtual void end() = 0;
+  void end();
 
   // is all modules available
-  virtual bool isReady(bool showDetail = true) = 0;
+  bool isReady(bool showDetail = true);
 
   // reboot
-  virtual void reboot() = 0;
+  void reboot();
 
   // get datas
-  virtual void getDatas() = 0;
+  void getDatas();
 
   // write datas
-  virtual void writeDatas() = 0;
+  void writeDatas();
 
   // close sdcard when landing
-  virtual void closeSDCard() = 0;
+  void closeSDCard();
 
   // transmit
-  virtual void transmit(const xString &str) = 0;
+  void transmit(const xString &str);
 
   // transmit
-  virtual xString received() = 0;
+  xString received();
 
   //--------------------------------------
   // Defines in this class
@@ -139,28 +138,11 @@ protected:
 
   xString getCSVFormattedData() const
   {
-    //csvHeader = 
+    //csvHeader =
     //time,temperature,pressure,accX,accY,accZ,gyroX,gyroY,gyroZ,magnX,magnY,magnZ,largeAccX,largeAccY,largeAccZ,longitude,latitude,roll,pitch,yaw
 
     return (
-        to_XString(datas.time) + "," + to_XString(datas.temperature) + "," + to_XString(datas.pressure) + ","
-        + to_XString(datas.accel.x) + "," + to_XString(datas.accel.y) + "," + to_XString(datas.accel.z) + ","
-        + to_XString(datas.gyro.x) + "," + to_XString(datas.gyro.y) + "," + to_XString(datas.gyro.z) + ","
-        + to_XString(datas.magn.x) + "," + to_XString(datas.magn.y) + "," + to_XString(datas.magn.z) + ","
-        + to_XString(datas.largeAcc.x) + "," + to_XString(datas.largeAcc.y) + "," + to_XString(datas.largeAcc.z) + ","
-        + to_XString(datas.longitude) + "," + to_XString(datas.latitude) + ","
-        + to_XString(datas.roll) + "," + to_XString(datas.pitch) + "," + to_XString(datas.yaw)
-        );
-  }
-
-  bool isElapsed(float time)
-  {
-    if (preTime_ < (datas.time - time))
-    {
-      preTime_ = datas.time;
-      return true;
-    }
-    return false;
+        to_XString(datas.time) + "," + to_XString(datas.temperature) + "," + to_XString(datas.pressure) + "," + to_XString(datas.accel.x) + "," + to_XString(datas.accel.y) + "," + to_XString(datas.accel.z) + "," + to_XString(datas.gyro.x) + "," + to_XString(datas.gyro.y) + "," + to_XString(datas.gyro.z) + "," + to_XString(datas.magn.x) + "," + to_XString(datas.magn.y) + "," + to_XString(datas.magn.z) + "," + to_XString(datas.largeAcc.x) + "," + to_XString(datas.largeAcc.y) + "," + to_XString(datas.largeAcc.z) + "," + to_XString(datas.longitude) + "," + to_XString(datas.latitude) + "," + to_XString(datas.roll) + "," + to_XString(datas.pitch) + "," + to_XString(datas.yaw));
   }
 
 private:
@@ -181,6 +163,5 @@ private:
   // imu filter
   void applyIMUFilter();
 };
-
 
 #endif

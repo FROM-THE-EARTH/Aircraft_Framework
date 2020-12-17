@@ -1,8 +1,10 @@
 #ifndef INCLUDE_VEC3_H
 #define INCLUDE_VEC3_H
 
-#include "../Utils/Utils.h"
 #include "../Type/XString.h"
+
+#include <math.h>
+
 
 struct Vec3
 {
@@ -27,7 +29,7 @@ struct Vec3
 
   float length() const
   {
-    return Utils::Math::sqrt(x * x + y * y + z * z);
+    return sqrt(x * x + y * y + z * z);
   }
 
   Vec3 normalized() const
