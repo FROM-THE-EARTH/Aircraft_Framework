@@ -3,7 +3,7 @@
 
 #include "Vec3.h"
 
-struct Datas
+struct FlightData
 {
   //Current values
   float time, deltaTime;            //[s]
